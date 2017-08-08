@@ -1,0 +1,25 @@
+Z(T) Deg&a/p(time)
+C 00:30:00  ln2_fill.tsk
+T 09:20:00  nir_10_40_cap_no_cap.tsk
+T 09:40:00  nir_10_40_cap_no_cap.tsk
+T 10:00:00  nir_10_40_cap_no_cap.tsk
+T 10:20:00  nir_10_40_cap_no_cap.tsk
+T 10:40:00  nir_10_40_cap_no_cap.tsk
+T 11:00:00  nir_10_40_cap_no_cap.tsk
+T 11:20:00  nir_10_40_cap_no_cap.tsk
+T 11:40:00  nir_10_40_cap_no_cap.tsk
+T 12:00:00  nir_10_40_cap_no_cap.tsk
+T 12:20:00  nir_10_40_cap_no_cap.tsk
+T 12:40:00  nir_10_40_cap_no_cap.tsk
+T 13:00:00  nir_10_40_cap_no_cap.tsk
+T 13:20:00  nir_10_40_cap_no_cap.tsk
+T 13:40:00  nir_10_40_cap_no_cap.tsk
+T 14:00:00  nir_10_40_cap_no_cap.tsk
+T 14:20:00  nir_10_40_cap_no_cap.tsk
+T 14:40:00  nir_10_40_cap_no_cap.tsk
+T 15:00:00  nir_10_40_cap_no_cap.tsk
+T 15:20:00  nir_10_40_cap_no_cap.tsk
+T 15:40:00  nir_10_40_cap_no_cap.tsk
+T 16:00:00  nir_10_40_cap_no_cap.tsk
+T 16:20:00  nir_10_40_cap_no_cap.tsk
+end

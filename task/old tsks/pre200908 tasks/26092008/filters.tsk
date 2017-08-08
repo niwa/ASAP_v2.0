@@ -1,0 +1,10 @@
+Filters.tsk JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+6      Number of XPMS to run
+L2_int.xpm L2
+L3_int.xpm L3
+L4_int.xpm L4
+L5_int.xpm L5
+Lc_int.xpm Lc
+L9_int.xpm L9
+EXIT

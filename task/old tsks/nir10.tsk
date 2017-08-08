@@ -1,0 +1,11 @@
+nir10.tsk   JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+7      Number of XPMS to run
+nir_10_.xpm LW
+nir_10_.xpm LW
+nir_10_.xpm LW
+nir_10_.xpm LW
+nir_10_.xpm LW
+nir_10_.xpm LW
+nir_10_.xpm LW
+EXIT

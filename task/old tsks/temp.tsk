@@ -1,0 +1,8 @@
+temp.tsk
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+4       Number of XPMS to run
+l3shb033.xpm l3
+l4shb133.xpm l4
+lmshb163.xpm lm
+lcsmb15A.xpm lc
+EXIT

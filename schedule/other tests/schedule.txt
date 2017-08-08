@@ -1,0 +1,15 @@
+Z(T) Deg&a/p(time)
+C 06:40:00  ln2_fill.tsk  
+Z 79.0 A    AM_HR.tsk            
+Z 77.0 A    AM_HR.tsk            
+Z 75.0 A    AM_HR.tsk            
+Z 69.0 A    AM_HR.tsk            
+C 08:00:00  ln2_fill.tsk  
+Z 65.0 A    MidAM_HR.tsk
+T 12:00:00  NOON_HR.tsk   
+Z 65.0 P    MidPM_HR.tsk         
+Z 69.0 P    MidPM_HR.tsk        
+Z 75.0 P    PM_HR.tsk            
+Z 77.0 P    PM_HR.tsk            
+Z 79.0 P    PM_HR.tsk            
+end

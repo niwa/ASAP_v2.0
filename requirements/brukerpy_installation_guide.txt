@@ -1,0 +1,58 @@
+Python and BrukerPy Installation Guide
+
+Part 1: Installing Python 
+
+Insert BrukerPy USB stick or access scratch/geddesag and navigate to the Python_and_BrukerPy folder
+
+Determine Computer OS
+Click Start, right click computer, properties, determine if 32bit or 64 bit
+
+Copy the python folder with the associated 32 or 64 bit version from Python_and_BrukerPy  to the desktop
+Enter the folder on the desktop and extract the zipped anaconda file
+
+From the newly unzipped folder, run the only file contained within (anaconda appliation)
+Select installation users (shouldnt matter, all is preferable)
+Select installation path, preferably at the root of the C drive
+tick both boxes, crucially the path variable
+click install and wait (10 mins)
+
+Check that python / anaconda has been installed
+Find Anaconda in the start menu and run spyder
+This may take a short while to load up the first time
+Play in the ipython console, check that its working, import numpy etc
+
+Part 2: Install Pyephem
+From anaconda in the start menu open the anaconda prompt
+Navigate to the python desktop folder
+enter the following command;
+pip install <ephem wheel file> 
+where <ephem wheel file is the name of the wheel file in the folder, in the 32 bit case this command would be;
+pip install ephem-3.7.6.0-cp27-none-win32.whl
+This will now install the pyephem library
+Check that this is available by typing import ephem in spyder or a python terminal
+
+Part 3: Set up BrukerPy
+From the Python_and_BrukerPy , copy the brukerpy folder to your directory of choice, again ideally C:/
+open the brukerpy configuration file in the newly created directory
+Amend the path and site variables according to your system
+Open Spyder and open brukerpy_main.py
+Comment out the following lines;
+sys.stdout= open("C:/brukerpy_v1.5/run_log.dat","a")
+sys.stderr=sys.stdout
+This allows us to debug far easier in case its not working
+Run the program to test then uncomment the above lines.
+Change the run_log directory in the above line to your desired path. This will not change with the configuration file as it is fundamentally hard coded. It is therefore important to change it and know where it points to
+
+Part 4: Set up the all shortcut
+On the desktop right click -> new -> shortcut
+At the prompt, browse to and select brukerpy_main.py from your brukerpy folder
+At the next promt, give the shortcut an appropriate name
+Right click on the shortcut -> properties -> shortcut tab -> Change Icon...
+Browse to and select the icon file from the brukerpy folder, click ok, and apply
+Once again in the shortcut tab, in the Target path enter your python installation directory with pythonw.exe instead of python.exe (it is also sufficient if your python path variable has been set up correctly just to enter pythonw or python) i.e.;
+C:\Users\geddesag\AppData\Local\Continuum\Anaconda2\pythonw.exe C:\Users\geddesag\Desktop\brukerpy_v1.5\brukerpy_main.py
+this is the same as in the command line entering python brukerpy_main.py
+Click ok to close the window and double click on the shortcut
+Brukerpy should now start 
+
+BrukerPy Installation should now be complete. Enjoy! Just remember to set up your paths, tasks and schedules according to what you want! If it doesnt work, default back to autobruk or brukerlite and get in touch

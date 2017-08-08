@@ -1,0 +1,119 @@
+Z(T) Deg&a/p(time)
+C 00:30:00  ln2_fill.tsk
+Z 79.0 A    nir_winter.tsk
+Z 78.0 A    nir_winter.tsk
+Z 77.0 A    nir_winter.tsk
+Z 76.0 A    nir_winter.tsk
+Z 75.0 A    nir_winter.tsk
+Z 74.0 A    nir_winter.tsk
+Z 73.0 A    nir_winter.tsk
+Z 72.0 A    nir_winter.tsk
+Z 71.0 A    nir_winter.tsk
+Z 70.0 A    nir_winter.tsk
+Z 69.0 A    nir_winter.tsk
+Z 68.0 A    nir_winter.tsk
+Z 67.0 A    nir_winter.tsk
+Z 66.0 A    nir_winter.tsk
+Z 65.0 A    nir_winter.tsk
+Z 64.0 A    nir_winter.tsk
+Z 63.0 A    nir_winter.tsk
+Z 62.0 A    nir_winter.tsk
+Z 61.0 A    nir_winter.tsk
+Z 60.0 A    nir_winter.tsk
+Z 59.0 A    nir_winter.tsk
+Z 58.0 A    nir_winter.tsk
+Z 57.0 A    nir_winter.tsk
+Z 56.0 A    nir_winter.tsk
+Z 55.0 A    nir_winter.tsk
+Z 54.0 A    nir_winter.tsk
+Z 53.0 A    nir_winter.tsk
+Z 52.0 A    nir_winter.tsk
+Z 51.0 A    nir_winter.tsk
+Z 50.0 A    nir_winter.tsk
+Z 49.0 A    nir_winter.tsk
+Z 48.0 A    nir_winter.tsk
+Z 47.0 A    nir_winter.tsk
+Z 46.0 A    nir_winter.tsk
+Z 45.0 A    nir_winter.tsk
+T 09:00:00  nir_winter.tsk
+T 09:10:00  nir_winter.tsk
+T 09:20:00  nir_winter.tsk
+T 09:30:00  nir_winter.tsk
+T 09:40:00  nir_winter.tsk
+T 09:50:00  nir_winter.tsk
+T 10:00:00  nir_winter.tsk
+T 10:10:00  nir_winter.tsk
+T 10:20:00  nir_winter.tsk
+T 10:30:00  nir_winter.tsk
+T 10:40:00  nir_winter.tsk
+T 10:50:00  nir_winter.tsk
+T 11:00:00  nir_winter.tsk
+T 11:10:00  nir_winter.tsk
+T 11:20:00  nir_winter.tsk
+T 11:30:00  nir_winter.tsk
+T 11:40:00  nir_winter.tsk
+T 11:50:00  nir_winter.tsk
+T 12:00:00  nir_winter.tsk
+T 12:10:00  nir_winter.tsk
+T 12:20:00  nir_winter.tsk
+T 12:30:00  nir_winter.tsk
+T 12:40:00  nir_winter.tsk
+T 12:50:00  nir_winter.tsk
+T 13:00:00  nir_winter.tsk
+T 13:10:00  nir_winter.tsk
+T 13:20:00  nir_winter.tsk
+T 13:30:00  nir_winter.tsk
+T 13:40:00  nir_winter.tsk
+T 13:50:00  nir_winter.tsk
+T 14:00:00  nir_winter.tsk
+T 14:10:00  nir_winter.tsk
+T 14:20:00  nir_winter.tsk
+T 14:30:00  nir_winter.tsk
+T 14:40:00  nir_winter.tsk
+T 14:50:00  nir_winter.tsk
+T 15:00:00  nir_winter.tsk
+T 15:10:00  nir_winter.tsk
+T 15:20:00  nir_winter.tsk
+T 15:30:00  nir_winter.tsk
+T 15:40:00  nir_winter.tsk
+T 15:50:00  nir_winter.tsk
+T 16:00:00  nir_winter.tsk
+T 16:10:00  nir_winter.tsk
+T 16:20:00  nir_winter.tsk
+Z 45.0 P    nir_winter.tsk
+Z 46.0 P    nir_winter.tsk
+Z 47.0 P    nir_winter.tsk
+Z 48.0 P    nir_winter.tsk
+Z 49.0 P    nir_winter.tsk
+Z 50.0 P    nir_winter.tsk
+Z 51.0 P    nir_winter.tsk
+Z 52.0 P    nir_winter.tsk
+Z 53.0 P    nir_winter.tsk
+Z 54.0 P    nir_winter.tsk
+Z 55.0 P    nir_winter.tsk
+Z 56.0 P    nir_winter.tsk
+Z 57.0 P    nir_winter.tsk
+Z 58.0 P    nir_winter.tsk
+Z 59.0 P    nir_winter.tsk
+Z 60.0 P    nir_winter.tsk
+Z 61.0 P    nir_winter.tsk
+Z 62.0 P    nir_winter.tsk
+Z 63.0 P    nir_winter.tsk
+Z 64.0 P    nir_winter.tsk
+Z 65.0 P    nir_winter.tsk
+Z 66.0 P    nir_winter.tsk
+Z 67.0 P    nir_winter.tsk
+Z 68.0 P    nir_winter.tsk
+Z 69.0 P    nir_winter.tsk
+Z 69.0 P    nir_winter.tsk
+Z 70.0 P    nir_winter.tsk
+Z 71.0 P    nir_winter.tsk
+Z 72.0 P    nir_winter.tsk
+Z 73.0 P    nir_winter.tsk
+Z 74.0 P    nir_winter.tsk
+Z 75.0 P    nir_winter.tsk
+Z 76.0 P    nir_winter.tsk
+Z 77.0 P    nir_winter.tsk
+Z 78.0 P    nir_winter.tsk
+Z 79.0 P    nir_winter.tsk
+end

@@ -1,0 +1,10 @@
+L4.tsk JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+6     Number of XPMS to run
+L4\l4shb103.xpm
+L4\l4shb113.xpm
+L4\l4shb123.xpm
+L4\l4ant.xpm
+L4\l4shb104_no_hp.xpm
+L4\l4shb104_no_hp_2.xpm
+EXIT

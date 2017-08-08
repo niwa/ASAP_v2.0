@@ -1,0 +1,4 @@
+#Task Data Base - Start and stop values are either times (T) HH:MM:SS or SZA (Z), do not use negative sza's 90 is sunrise, 0 is maximum noon. The code will take care of it
+#Type( Z or T)  start_value stop_value Taskname
+Z 90 0 sza_90_80.tsk
+

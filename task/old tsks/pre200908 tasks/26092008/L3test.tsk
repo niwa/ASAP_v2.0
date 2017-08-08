@@ -1,0 +1,7 @@
+L3 test JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+3       Number of XPMS to run
+L3SHB103.xpm T3
+L3SHB113.xpm T3
+L3SHB123.xpm T3
+EXIT

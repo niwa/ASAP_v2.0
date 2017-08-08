@@ -1,0 +1,11 @@
+L4 test JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+7       Number of XPMS to run
+L4SHB003.xpm T4
+L4SHB103.xpm T4
+L4SHB203.xpm T4
+L4SHB113.xpm T4
+L4SHB123.xpm T4
+L4SHB133.xpm T4
+L4SHB213.xpm T4
+EXIT

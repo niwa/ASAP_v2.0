@@ -1,0 +1,11 @@
+#Task Data Base - Start and stop values are either times (T) HH:MM:SS or SZA (Z), do not use negative sza's 90 is sunrise, 0 is maximum noon. The code will take care of it, if you want all day just do 'Z 90 0 taskname'
+#Type( Z or T)  start_value stop_value Taskname
+Z 90 80 sza_90_80.tsk 
+Z 80 70 sza_80_70.tsk 
+Z 70 60 sza_70_60.tsk 
+Z 60 50 sza_50_60.tsk
+Z 50 40 sza_50_40.tsk
+Z 40 30 sza_30_40.tsk
+Z 30 20 sza_20_30.tsk
+T 12:00:00 15:00:00 sza_50_40.tsk
+T 15:00:00 16:00:00 ooofti_run.tsk

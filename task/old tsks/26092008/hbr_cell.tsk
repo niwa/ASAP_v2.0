@@ -1,0 +1,5 @@
+HBR_CELL RUN IN NZ  * For 120HR* 14 Feb 2002 JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+1       Number of XPMS to run
+hbr4CELL_JR.XPM Hb
+EXIT

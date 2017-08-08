@@ -1,0 +1,18 @@
+Z(T) Deg&a/p(time)
+C 00:30:00  ln2_fill.tsk
+T 09:30:00  cap_test.tsk
+T 10:00:00  cap_test.tsk
+T 10:30:00  cap_test.tsk
+T 11:00:00  cap_test.tsk
+T 11:30:00  cap_test.tsk
+T 12:00:00  cap_test.tsk
+T 12:30:00  cap_test.tsk
+T 13:00:00  cap_test.tsk
+T 13:30:00  cap_test.tsk
+T 14:00:00  cap_test.tsk
+T 14:30:00  cap_test.tsk
+T 15:00:00  cap_test.tsk
+T 15:30:00  cap_test.tsk
+T 16:00:00  cap_test.tsk
+T 16:30:00  cap_test.tsk
+end

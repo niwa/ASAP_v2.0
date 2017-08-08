@@ -1,0 +1,710 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="padding">20</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+    </layout>
+    <child>
+      <object class="ttk.Labelframe" id="current_info_frame">
+        <property name="borderwidth">10</property>
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Current Info.</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="columnspan">1</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="rowspan">1</property>
+          <property name="sticky">nw</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="utctime_label">
+            <property name="justify">center</property>
+            <property name="text" translatable="yes">UTC Time</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="localtime_label">
+            <property name="text" translatable="yes">Local Time</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="sza_label">
+            <property name="font">TkSmallCaptionFont</property>
+            <property name="text" translatable="yes">SZA</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="eleveation_label">
+            <property name="anchor">center</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Elevation</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="utctime_entry">
+            <property name="anchor">center</property>
+            <property name="justify">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">10</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="localtime_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">10</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="sza_entry">
+            <property name="anchor">center</property>
+            <property name="justify">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">000.00</property>
+            <property name="width">10</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="elv_entry">
+            <property name="anchor">center</property>
+            <property name="justify">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">000.00</property>
+            <property name="width">10</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="daily_info_frame">
+        <property name="borderwidth">10</property>
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Daily Info.</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="columnspan">1</property>
+          <property name="ipadx">0</property>
+          <property name="ipady">32</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+          <property name="sticky">ne</property>
+          <rows>
+            <row id="0">
+              <property name="minsize">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="minsize">0</property>
+              <property name="pad">0</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="daily_sza_label">
+            <property name="justify">right</property>
+            <property name="text" translatable="yes">SZA</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="daily_local_time_label">
+            <property name="text" translatable="yes">Local Time</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="high_sun_label">
+            <property name="text" translatable="yes">High Sun</property>
+            <property name="width">15</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="high_sun_sza_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">000.00</property>
+            <property name="width">17</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="high_sun_time_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">17</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="low_sun_label">
+            <property name="text" translatable="yes">Low Sun</property>
+            <property name="width">15</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="low_sun_sza_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">000.00</property>
+            <property name="width">17</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="low_sun_time_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">17</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="sunrise_label">
+            <property name="text" translatable="yes">Sunrise (SZA 90)</property>
+            <property name="width">15</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="sunrise_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">35</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="columnspan">2</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="sunset_label">
+            <property name="text" translatable="yes">Sunset (SZA 90)</property>
+            <property name="width">15</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="sunset_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">35</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="columnspan">2</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="day_length_label">
+            <property name="text" translatable="yes">Day Length</property>
+            <property name="width">15</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="day_length_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">00:00:00</property>
+            <property name="width">35</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="columnspan">2</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="commands_frame">
+        <property name="borderwidth">10</property>
+        <property name="height">400</property>
+        <property name="text" translatable="yes">Commands</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">2</property>
+          <property name="columnspan">1</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="rowspan">2</property>
+          <property name="sticky">e</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="schedule_run_button">
+            <property name="text" translatable="yes">Stop Schedule</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="abort_task_button">
+            <property name="text" translatable="yes">Abort Task</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="manual_task_button">
+            <property name="text" translatable="yes">Manual Task</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="manual_xpm_button">
+            <property name="text" translatable="yes">Manual Xpm</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="comment_button">
+            <property name="text" translatable="yes">Enter Comment</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="guide_button">
+            <property name="text" translatable="yes">Guide</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="test_opus_button">
+            <property name="text" translatable="yes">Test Opus Link</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="run_daily_checkbutton">
+            <property name="text" translatable="yes">Run Daily</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">8</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="dynamic_mode_checkbutton">
+            <property name="text" translatable="yes">Dynamic Mode</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">9</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="legacy_format_checkbutton">
+            <property name="text" translatable="yes">Legacy Format</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">10</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="use_aux_data_checkbutton">
+            <property name="text" translatable="yes">Use Auxiliary Flag</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">11</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="view_aux_button">
+            <property name="text" translatable="yes">View Auxiliary Data</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">7</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Separator" id="Separator_5">
+        <property name="orient">horizontal</property>
+        <layout>
+          <property name="column">2</property>
+          <property name="columnspan">1</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="rowspan">4</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="log_out_frame">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Command Log and Output</property>
+        <property name="width">400</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="columnspan">2</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+          <property name="rowspan">1</property>
+          <property name="sticky">ne</property>
+        </layout>
+        <child>
+          <object class="tk.Scrollbar" id="log_out_scrollbar">
+            <property name="orient">vertical</property>
+            <bind add="" handler="" sequence="" />
+            <layout>
+              <property name="column">1</property>
+              <property name="ipadx">1</property>
+              <property name="ipady">71</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Text" id="log_out_text">
+            <property name="height">10</property>
+            <property name="text" translatable="yes">Feel free to mess around with the layout, just as long as you do not change the widget ids, or if you do, change them in the brukerpy_main.py script as well</property>
+            <property name="width">60</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="current_status_label">
+        <property name="anchor">center</property>
+        <property name="background">#ffffff</property>
+        <property name="justify">right</property>
+        <property name="relief">sunken</property>
+        <property name="text" translatable="yes">Current Status: Idle</property>
+        <property name="width">76</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="columnspan">2</property>
+          <property name="padx">15</property>
+          <property name="propagate">True</property>
+          <property name="row">3</property>
+          <property name="sticky">s</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="task_info_frame">
+        <property name="height">200</property>
+        <property name="labelanchor">nw</property>
+        <property name="text" translatable="yes">Task Info.</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="ipadx">8</property>
+          <property name="ipady">20</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">ne</property>
+          <rows>
+            <row id="0">
+              <property name="minsize">0</property>
+              <property name="pad">0</property>
+            </row>
+            <row id="1">
+              <property name="pad">0</property>
+            </row>
+            <row id="2">
+              <property name="pad">0</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="minsize">0</property>
+              <property name="pad">0</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="task_countdown_label">
+            <property name="anchor">center</property>
+            <property name="text" translatable="yes">Task Countdown</property>
+            <property name="width">25</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="scheduled_task_label">
+            <property name="anchor">center</property>
+            <property name="text" translatable="yes">Scheduled Task</property>
+            <property name="width">25</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="manual_task_label">
+            <property name="anchor">center</property>
+            <property name="text" translatable="yes">Manual Task</property>
+            <property name="width">25</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="task_countdown_entry">
+            <property name="anchor">center</property>
+            <property name="justify">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">n/a</property>
+            <property name="width">25</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="scheduled_task_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">sza_50_60.tsk</property>
+            <property name="width">25</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="manual_task_entry">
+            <property name="anchor">center</property>
+            <property name="relief">sunken</property>
+            <property name="text" translatable="yes">Select Task or Xpm</property>
+            <property name="width">25</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="schedule_frame">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Schedule</property>
+        <property name="width">192</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+          <property name="rowspan">3</property>
+          <property name="sticky">nw</property>
+        </layout>
+        <child>
+          <object class="tk.Listbox" id="schedule_listbox">
+            <property name="height">22</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Scrollbar" id="schedule_hsbar">
+            <property name="orient">horizontal</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="ipadx">49</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">e</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Scrollbar" id="schedule_vsbar">
+            <property name="orient">vertical</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="ipady">191</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="rowspan">1</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

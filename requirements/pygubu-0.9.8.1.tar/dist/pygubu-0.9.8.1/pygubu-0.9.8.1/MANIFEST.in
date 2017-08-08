@@ -1,0 +1,6 @@
+include COPYING
+include LEEME.txt
+recursive-include po *
+recursive-include pygubudesigner/locale *
+recursive-include examples *
+global-exclude *~

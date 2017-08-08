@@ -1,0 +1,148 @@
+2017-03-31 13:27:40.619000
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Python27\lib\lib-tk\Tkinter.py", line 1532, in __call__
+    return self.func(*args)
+  File "C:\Python27\lib\lib-tk\Tkinter.py", line 583, in callit
+    func(*args)
+  File "C:\brukerpy\brukerpy_main.py", line 303, in update_clock
+    reload(library)
+NameError: global name 'library' is not defined
+2017-04-02 10:44:56.128000
+pythonw exec_xpm.py lmshb163.xpm 1 C:\data\20170402\20170402.log 1 7 0 0
+<subprocess.Popen object at 0x024646D0>
+0
+0
+pythonw exec_xpm.py l5shb143.xpm 1 C:\data\20170402\20170402.log 2 7 0 0
+<subprocess.Popen object at 0x024646D0>
+0
+0
+pythonw exec_xpm.py l2shb133.xpm 1 C:\data\20170402\20170402.log 3 7 0 0
+<subprocess.Popen object at 0x024646D0>
+0
+0
+pythonw exec_xpm.py l3shb033.xpm 1 C:\data\20170402\20170402.log 4 7 0 0
+<subprocess.Popen object at 0x024646D0>
+None
+None
+pythonw exec_xpm.py l4shb043.xpm 1 C:\data\20170402\20170402.log 5 7 0 0
+<subprocess.Popen object at 0x024647D0>
+0
+0
+pythonw exec_xpm.py lnshb073.xpm 1 C:\data\20170402\20170402.log 6 7 0 0
+<subprocess.Popen object at 0x024647D0>
+0
+0
+pythonw exec_xpm.py lcsmb15a.xpm 1 C:\data\20170402\20170402.log 7 7 0 0
+<subprocess.Popen object at 0x024647D0>
+None
+None
+pythonw exec_xpm.py lmshb163.xpm 1 C:\data\20170402\20170402.log 1 7 0 0
+<subprocess.Popen object at 0x024647D0>
+None
+None
+pythonw exec_xpm.py l5shb143.xpm 1 C:\data\20170402\20170402.log 2 7 0 0
+<subprocess.Popen object at 0x02464850>
+None
+None
+pythonw exec_xpm.py l2shb133.xpm 1 C:\data\20170402\20170402.log 3 7 0 0
+<subprocess.Popen object at 0x02464790>
+None
+None
+pythonw exec_xpm.py l3shb033.xpm 1 C:\data\20170402\20170402.log 4 7 0 0
+<subprocess.Popen object at 0x02464790>
+None
+None
+pythonw exec_xpm.py l4shb043.xpm 1 C:\data\20170402\20170402.log 5 7 0 0
+<subprocess.Popen object at 0x02464750>
+0
+0
+pythonw exec_xpm.py lnshb073.xpm 1 C:\data\20170402\20170402.log 6 7 0 0
+<subprocess.Popen object at 0x02464750>
+0
+0
+pythonw exec_xpm.py lcsmb14a.xpm 1 C:\data\20170402\20170402.log 7 7 0 0
+<subprocess.Popen object at 0x02464750>
+None
+None
+pythonw exec_xpm.py l3shb033.xpm 1 C:\data\20170402\20170402.log 1 3 0 0
+<subprocess.Popen object at 0x02464750>
+0
+0
+pythonw exec_xpm.py l4shb043.xpm 1 C:\data\20170402\20170402.log 2 3 0 0
+<subprocess.Popen object at 0x02464750>
+None
+None
+pythonw exec_xpm.py l5shb143.xpm 1 C:\data\20170402\20170402.log 3 3 0 0
+<subprocess.Popen object at 0x024646F0>
+None
+None
+pythonw exec_xpm.py lcsmb15a.xpm 1 C:\data\20170402\20170402.log 1 7 0 0
+<subprocess.Popen object at 0x024646F0>
+0
+0
+pythonw exec_xpm.py lmshb163.xpm 1 C:\data\20170402\20170402.log 2 7 0 0
+<subprocess.Popen object at 0x024646F0>
+None
+None
+pythonw exec_xpm.py l4shb043.xpm 1 C:\data\20170402\20170402.log 3 7 0 0
+<subprocess.Popen object at 0x024647D0>
+0
+0
+pythonw exec_xpm.py l3shb033.xpm 1 C:\data\20170402\20170402.log 4 7 0 0
+<subprocess.Popen object at 0x024647D0>
+0
+0
+pythonw exec_xpm.py l2shb123.xpm 1 C:\data\20170402\20170402.log 5 7 0 0
+<subprocess.Popen object at 0x024647D0>
+0
+0
+pythonw exec_xpm.py l5shb143.xpm 1 C:\data\20170402\20170402.log 6 7 0 0
+<subprocess.Popen object at 0x024647D0>
+None
+None
+pythonw exec_xpm.py lnshb173.xpm 1 C:\data\20170402\20170402.log 7 7 0 0
+<subprocess.Popen object at 0x02464810>
+0
+0
+pythonw exec_xpm.py lnshb173.xpm 1 C:\data\20170402\20170402.log 1 8 0 0
+<subprocess.Popen object at 0x02464810>
+0
+0
+pythonw exec_xpm.py lcsmb15a.xpm 1 C:\data\20170402\20170402.log 2 8 0 0
+<subprocess.Popen object at 0x02464810>
+0
+0
+pythonw exec_xpm.py lmshb263.xpm 1 C:\data\20170402\20170402.log 3 8 0 0
+<subprocess.Popen object at 0x02464810>
+0
+0
+pythonw exec_xpm.py l4shb143.xpm 1 C:\data\20170402\20170402.log 4 8 0 0
+<subprocess.Popen object at 0x02464810>
+0
+0
+pythonw exec_xpm.py l3shb033.xpm 1 C:\data\20170402\20170402.log 5 8 0 0
+<subprocess.Popen object at 0x02464810>
+None
+None
+pythonw exec_xpm.py l2shb223.xpm 1 C:\data\20170402\20170402.log 6 8 0 0
+<subprocess.Popen object at 0x024646F0>
+0
+0
+pythonw exec_xpm.py l5shb243.xpm 1 C:\data\20170402\20170402.log 7 8 0 0
+<subprocess.Popen object at 0x024646F0>
+None
+None
+pythonw exec_xpm.py lnshb273.xpm 1 C:\data\20170402\20170402.log 8 8 0 0
+<subprocess.Popen object at 0x02464810>
+None
+None
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Python27\lib\lib-tk\Tkinter.py", line 1532, in __call__
+    return self.func(*args)
+  File "C:\Python27\lib\lib-tk\Tkinter.py", line 583, in callit
+    func(*args)
+  File "C:\brukerpy\brukerpy_main.py", line 303, in update_clock
+    reload(library)
+NameError: global name 'library' is not defined

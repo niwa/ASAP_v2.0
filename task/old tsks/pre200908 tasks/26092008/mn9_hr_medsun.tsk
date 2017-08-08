@@ -1,0 +1,7 @@
+MN9_HR_medsun RUN IN NZ  *120HR, about 70-60deg SZA* 11-06-2007 JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+3       Number of XPMS to run
+LmSHB163.xpm Lm
+LnSHB163.xpm Ln
+L9SHB163.xpm L9
+EXIT
