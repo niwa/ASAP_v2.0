@@ -17,8 +17,7 @@ this is just a quick note about the repository.
 
 I've included our example task, schedule and xpm directories with files
 so that you can get started straight away, but you will need to adapt them 
-to your needs. They are a starting point only, do not ask me to create them for
-you.
+to your needs. They are a starting point only. 
 
 I've also included wheel files for the main dependencies in the requirements folder,
 both for 32 and 64 bit, this might save you time but you should probably get the most up
