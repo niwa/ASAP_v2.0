@@ -222,7 +222,9 @@ class App():
         """Create a log file"""
 
         """Begin the main loop"""
-        self.update_aux_main()
+	self.aux_it_stop=int(aux_tp/(0.2))
+	self.aux_it=0
+        self.update_aux()
         self.update_clock_main()
         self.root.mainloop()
         
@@ -305,13 +307,13 @@ class App():
         """As below but for the aux function"""
         self.update_aux()
         """Runs every aux_tp seconds"""
-        self.root.after(int(aux_tp)*1000, self.update_aux)
+        self.aux_loop=self.root.after(int(aux_tp)*1000, self.update_aux)
         
     def update_clock_main(self):
         """Function that calls update clock every 200ms, they are separated to allow
         manual calls of update clock"""
         self.update_clock()
-        self.root.after(200, self.update_clock_main)
+        self.main_loop=self.root.after(200, self.update_clock_main)
         
     def update_clock(self):
         """Main running routine, call to refresh values on screen"""
@@ -483,6 +485,10 @@ class App():
         self.elv_entry.configure(text="%.2f" %(90.-sza))
         self.color_lines()
         self.task_countdown_entry.configure(text=countdown_out)
+	self.aux_it=self.aux_it+1
+	if self.aux_it==self.aux_it_stop:
+            self.aux_it=0
+	    self.update_aux()
         #self.root.after(200, self.update_clock)
 
 
