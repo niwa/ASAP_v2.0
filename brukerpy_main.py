@@ -139,7 +139,7 @@ class App():
         self.dynamic_mode_checkbutton.config(variable=self.dynamic_schedule_mode,command=self.dynamic_stat)
         self.legacy_format_checkbutton.config(variable=self.legacy_format_mode,command=self.legacy_format_stat)
         self.use_aux_flag_data_checkbutton.config(variable=self.use_aux_flag_mode,command=self.use_aux_stat)
-        
+
  
  
         
@@ -253,9 +253,10 @@ class App():
     def use_aux_stat(self):
         if self.use_aux_flag_mode.get()==1:
             text="Auxiliary flag mode enabled"
-            self.update_aux()
+            
         else:
             text="Auxiliary flag mode disabled"
+	self.update_aux()
         self.write_output(text)
         
     def on_close_aux(self)   :
@@ -1022,7 +1023,7 @@ class App():
     def monitor(self,xpm_path,experiment,format_mode,schedule_path,a,b,gui,sim): 
         """Run the process and monitor,on completion, wait a few seconds then end.
         this process is threaded"""
-        self.proc=subprocess.Popen(['python','exec_xpm.py',xpm_path,experiment,format_mode,schedule_path,a,b,gui,sim])
+        self.proc=subprocess.Popen(['pythonw','exec_xpm.py',xpm_path,experiment,format_mode,schedule_path,a,b,gui,sim])
         self.proc.communicate()  
         time.sleep(5)           
 
@@ -1088,7 +1089,7 @@ class App():
                     most_recent_line=tail((self.schedule_pathout),lines=1)
                 
                 elif self.abort_flag==0:
-                    command=['python','exec_xpm.py',xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)]
+                    command=['pythonw','exec_xpm.py',xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)]
                     print command
 
                     self.write_output("Starting Xpm - "+experiments[p]+" ("+str(p+1)+"/"+str(len(experiments))+")")
