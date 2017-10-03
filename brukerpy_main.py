@@ -1023,6 +1023,7 @@ class App():
     def monitor(self,xpm_path,experiment,format_mode,schedule_path,a,b,gui,sim): 
         """Run the process and monitor,on completion, wait a few seconds then end.
         this process is threaded"""
+        self.proc=subprocess.Popen(['pythonw','exec_xpm.py',str(xpm_path),experiment,format_mode,str(schedule_path),a,b,gui,sim])
         self.proc.communicate()  
         time.sleep(5)           
 
@@ -1155,6 +1156,7 @@ class App():
             """the same as above, but as its a single xpm, no abort function or loop 
             is needed"""
             xpm_path=xpmpath
+
             self.abort_task_button.config(state="disabled")
             command='pythonw exec_xpm.py "'+xpmpath+'" '+taskname+' '+str(self.legacy_format_mode.get())+' "'+str(self.schedule_pathout)+'" 1 1 '+str(self.gui_test_mode)+' '+str(self.simulator_mode)
             #command="pythonw exec_xpm.py "+xpmpath+" "+taskname+" "+str(self.legacy_format_mode.get())+" "+self.schedule_pathout+" 1 1 "+str(self.gui_test_mode)+" "+str(self.simulator_mode)
