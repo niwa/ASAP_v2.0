@@ -326,7 +326,8 @@ class App():
            
             """Move the stdout to the daily directory"""
             sys.stdout.close()
-            move(log_path+"gui_log.dat",os.path.dirname(self.schedule_pathout)+"\\gui.log")  
+	    if os.path.exists(log_path+"gui_log.dat"):
+                move(log_path+"gui_log.dat",os.path.dirname(self.schedule_pathout)+"\\gui.log")  
             if os.path.exists(log_path+"exec_log.dat"):
                 move(log_path+"exec_log.dat",os.path.dirname(self.schedule_pathout)+"\\exec.log")  
             
