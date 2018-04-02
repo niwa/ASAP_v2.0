@@ -21,7 +21,7 @@ import sys
 if __name__=='__main__':
     
     config=ConfigParser.ConfigParser()
-    config.read('brukerpy.ini')
+    config.read('asap.ini')
     site=config_out('site',config)
     def_paths_files=config_out('paths/files',config)
     startup=config_out('startup',config)

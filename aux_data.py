@@ -57,9 +57,7 @@ def convert(input_array,time_now)  :
     return date_out
     
 def gather_auxiliary_data2():
-    """Here is the real function, it must be named as above, I do not care what
-    you do here as long as you return a list or 1d array as well as an integer flag
-    value, 1 = do not run as the flag has been set, 0 means all is well, no flag set"""
+
     
     time_now=datetime.datetime.now()
     
@@ -76,6 +74,9 @@ def gather_auxiliary_data2():
 
 
 def gather_auxiliary_data():
+    """Here is the real function, it must be named as above, I do not care what
+    you do here as long as you return a list or 1d array as well as an integer flag
+    value, 1 = do not run as the flag has been set, 0 means all is well, no flag set"""
     now=datetime.datetime.now()
     year=str(now.year)
     month="%02d" % now.month

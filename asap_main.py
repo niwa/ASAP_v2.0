@@ -8,7 +8,7 @@ Created on Fri May 20 14:38:13 2016
 alex.geddes@niwa.co.nz
 
 
-Clean rebuild of the brukerpy program, with implementation of a builder and
+Clean rebuild of the asap program, with implementation of a builder and
 the new auxiliary data and flag function
 
 
@@ -56,7 +56,7 @@ class App():
         """Initialise tkinter"""
         
         self.root = tk.Tk()
-        self.root.title('BrukerPy_v2.0 - Contact alex.geddes@niwa.co.nz')
+        self.root.title('asap_v2.0 - Contact alex.geddes@niwa.co.nz')
         self.root.protocol('WM_DELETE_WINDOW', self.on_close)
 
         """Call builder"""
@@ -64,7 +64,7 @@ class App():
         self.builder = builder = pygubu.Builder()
 
         #2: Load an ui file
-        builder.add_from_file('brukerpy.ui')
+        builder.add_from_file('asap.ui')
 
         #3: Create the widget using a master as parent
         self.mainwindow = builder.get_object('mainwindow', self.root)
@@ -204,7 +204,7 @@ class App():
             self.schedule_run_button.config(text="Start Schedule")
             self.dynamic_mode_checkbutton.configure(state="normal")
         self.create_log_file()
-        self.write_output("Welcome to BrukerPy") 
+        self.write_output("Welcome to ASAP") 
         
         """Thread out the schedule process"""    
         self.t2=threading.Thread(target=self.threaded_solar)
@@ -365,7 +365,7 @@ class App():
             self.sched_run_flag=0
             self.task_run=0
             self.log_out_text.delete("1.0",END)
-            self.write_output("BrukerPy Refreshed")
+            self.write_output("ASAP Refreshed")
 
             if len(self.process_ids)>0:
                 self.write_output("Performing Cleanup of Lost Processes")
@@ -499,7 +499,7 @@ class App():
     def on_close(self):
         """Function to decide what to do when the gui is closed"""
         self.clean_up()
-        self.write_output("BrukerPy Closed")
+        self.write_output("ASAP Closed")
         self.root.destroy()
         
     def clean_up(self):
@@ -917,14 +917,14 @@ class App():
     def help_window_func(self):
         """Displays the help window accessed by the Guide button"""
         self.help_window = tk.Toplevel()
-        self.help_window.wm_title("BrukerPy Info")
+        self.help_window.wm_title("ASAP Info")
         #self.help_window.grab_set()
         self.help_window.focus()
         
         loc_label=tk.Label(self.help_window,text="Site Information").grid(row=0,column=0,columnspan=2,sticky=W)
         location=tk.Label(self.help_window,text=site['sitename']+" Latitude = "+site['latitude']+" Longitude = "+site['longe']+" UTC Offset = "+site['timezone']).grid(row=1,column=0,columnspan=2,sticky=W)
         met_conditions=tk.Label(self.help_window,text="Surface Pressure = "+site['pressure']+"mb Temperature = "+site['temperature']+" Celsius").grid(row=2,column=0,columnspan=2,sticky=W)
-        ini_loc=tk.Label(self.help_window,text="INI File is located at C:/brukerpy_v2.0/brukerpy.ini").grid(row=3,column=0,columnspan=2,sticky=W)
+        ini_loc=tk.Label(self.help_window,text="INI File is located at C:/asap_v2.0/asap.ini").grid(row=3,column=0,columnspan=2,sticky=W)
 
         
         spacer=tk.Label(self.help_window,text="")
@@ -1190,7 +1190,7 @@ if __name__=='__main__':
     
     "Lets get down to business! First off, lets get all the default_info from the ini file"
     config=ConfigParser.ConfigParser()
-    config.read('brukerpy.ini')
+    config.read('asap.ini')
     
     
 
