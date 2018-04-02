@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Created on Thu May 19 11:35:49 2016
 
@@ -314,12 +314,15 @@ def expected_time_schedule(a,lat,lon,utc_offset,psurf,temp):
     sunset=times[sunset_idx].time()
     day_length=str(times[sunset_idx]-times[sunrise_idx])
 
-    if sunrise_s<=89 or sunrise_s>=91.:
+    if sunrise_s<=89 or sunset_s<=89:
         sunrise="n/a"
-    
-    if sunset_s<=89 or sunset_s>=91.:
-        sunset="n/a"    
-        
+        sunset="n/a"
+        day_length="24:00:00"
+	
+    if sunrise_s>=91 or sunset_s>=91.:
+        sunset="n/a"
+        sunrise="n/a"
+        day_length="00:00:00"
         
         
     for i in range(len(task_sza)):
@@ -450,11 +453,13 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
 
     sza_time_local=[]
     high_sun_idx=where(array(sza_ref)==min(array(sza_ref)))[0][0]
-    low_sun_idx=where(array(sza_ref)==max(array(sza_ref)))[0][0]
+    low_sun_idx1=where(array(sza_ref)[0:43200]==max(array(sza_ref)[0:43200]))[0][0]
+    low_sun_idx2=where(array(sza_ref)[43200:]==max(array(sza_ref)[43200:]))[0][0]+43200
     high_sun_sza=sza_ref[high_sun_idx]
-    low_sun_sza=sza_ref[low_sun_idx]
+    low_sun_sza=sza_ref[low_sun_idx1]
+    low_sun_sza2=sza_ref[low_sun_idx2]
     high_sun_time=format_time(times_local[high_sun_idx].time())
-    low_sun_time=format_time(times_local[low_sun_idx].time())
+    low_sun_time=format_time(times_local[low_sun_idx1].time())
 
     sunrise_idx=find_nearest(array(sza_ref[0:high_sun_idx]),90.0)
     sunset_idx=find_nearest(array(sza_ref[high_sun_idx:]),90.0)+high_sun_idx
@@ -470,13 +475,15 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
     """Last little thing, may or may not be useful. if nearest value to 90 is above 91 or below 89, 
     the sun is permanently set or risen. So I return an n/a value for the formatted string."""
     
-    if sunrise_s<=89 or sunrise_s>=91.:
+    if sunrise_s<=89 or sunset_s<=89:
         sunrise="n/a"
-        day_length="n/a"
-    
-    if sunset_s<=89 or sunset_s>=91.:
-        sunset="n/a"    
-        day_length="n/a" 
+        sunset="n/a"
+        day_length="24:00:00"
+	
+    if sunrise_s>=91 or sunset_s>=91.:
+        sunset="n/a"
+        sunrise="n/a"
+        day_length="00:00:00"
         
     windows_start=[]
     windows_stop=[]
@@ -518,27 +525,79 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
         task_types_out=[database[0],'F']
         task_flags=[0,0]
     else: 
-        for i in range(len(database[0])):
+        for i in range(len(database)):
             ranges=database[1:3,i]
             if database[0][i]=='Z':
-                if float(ranges[0])>high_sun_sza<float(ranges[1]):
-                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
-                    windows_start.append(start_am)
-                    window_identity.append(i)
+                """Find the blocks in the morning"""
+                if float(ranges[0])>low_sun_sza>float(ranges[1]):
+                    print i,"a"
+                    """start time is low sun sza time"""
+                    start_am=times_local[low_sun_idx1]
                     stop_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[1]))]
-                    windows_stop.append(stop_am)
-                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
-                    windows_start.append(start_pm)
-                    window_identity.append(i)
-                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
-                    windows_stop.append(stop_pm)
-        
-                if float(ranges[0])>high_sun_sza>float(ranges[1]):
+                    if stop_am!=start_am:
+                        print "1"
+                        windows_start.append(start_am)
+                        windows_stop.append(stop_am)
+                        window_identity.append(i)
+                    
+                elif float(ranges[0])>high_sun_sza<float(ranges[1]):
+                    print 2
                     start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
-                    windows_start.append(start_am)
-                    window_identity.append(i)
+                    stop_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[1]))]
+                    if stop_am!=start_am:
+                        windows_start.append(start_am)
+                        windows_stop.append(stop_am)
+                        window_identity.append(i)
+                    
+                elif float(ranges[0])>high_sun_sza>float(ranges[1]):
+                    print i,"d"
+                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
                     stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
-                    windows_stop.append(stop_pm)
+                    if stop_pm!=start_am:
+                        windows_start.append(start_am)
+                        windows_stop.append(stop_pm)
+                        window_identity.append(i)
+
+                if float(ranges[0])>low_sun_sza2>float(ranges[1]):
+                    """start time is low sun sza time"""
+                    print i, "b"
+                    stop_pm=times_local[low_sun_idx2]
+                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
+                    if stop_pm!=start_pm:
+                        
+                        windows_start.append(start_pm)
+                        windows_stop.append(stop_pm)
+                        window_identity.append(i)
+                elif float(ranges[0])>high_sun_sza<float(ranges[1]):
+                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
+                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+                    if stop_pm!=start_pm:
+                        windows_start.append(start_pm)
+                        windows_stop.append(stop_pm)
+                        window_identity.append(i)
+                                 
+#                if float(ranges[0])>high_sun_sza<float(ranges[1]):
+#                    print i,"c"
+#                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
+#                    windows_start.append(start_am)
+#                    window_identity.append(i)
+#                    stop_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[1]))]
+#                    windows_stop.append(stop_am)
+#                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
+#                    windows_start.append(start_pm)
+#                    window_identity.append(i)
+#                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+#                    windows_stop.append(stop_pm)
+#        
+#                if float(ranges[0])>high_sun_sza>float(ranges[1]):
+#                    print i,"d"
+#                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
+#                    windows_start.append(start_am)
+#                    window_identity.append(i)
+#                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+#                    windows_stop.append(stop_pm)
+#                    
+
             
             """Here is the same but simpler because it is for the time specfied windows"""
             if database[0][i]=='T':
@@ -551,8 +610,9 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
         #windows_start.sort()
         #windows_stop.sort()
         merged_windows_sza=array([window_identity,windows_start,windows_stop])
+        #jim=merged_windows_sza.copy()
         for i in range(len(merged_windows_sza)):
-            merged_windows_sza[i]=merged_windows_sza[i][argsort(merged_windows_sza[2])]
+            merged_windows_sza[i]=merged_windows_sza[i][argsort(merged_windows_sza[1])]
         
         
         
