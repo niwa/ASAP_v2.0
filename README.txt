@@ -1,6 +1,7 @@
 ####
 
-BrukerPy v2.0
+ASAP v2.0
+(formerly known as brukerpy)
 
 A.G.Geddes
 
