@@ -56,7 +56,7 @@ class App():
         """Initialise tkinter"""
         
         self.root = tk.Tk()
-        self.root.title('BrukerPy_v2.0 - Contact alex.geddes@niwa.co.nz')
+        self.root.title('ASAP_v2.0 - Contact alex.geddes@niwa.co.nz')
         self.root.protocol('WM_DELETE_WINDOW', self.on_close)
 
         """Call builder"""
