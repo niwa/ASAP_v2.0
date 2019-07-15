@@ -318,7 +318,7 @@ class App():
         
     def update_clock(self):
         """Main running routine, call to refresh values on screen"""
-        now=datetime.datetime.now()
+        now=get_local_time(int(site['timezone']))
         """Reset Schedule at 1am each day"""        
         
         if format_time(now)=="01:00:00" and self.reset_flag==0: 
@@ -351,7 +351,7 @@ class App():
 
             #reload(library)
             
-            print str(datetime.datetime.now())
+            print str(get_local_time(int(site['timezone'])))
             self.create_log_file()
             
             """Shall I run the next schedule?"""
@@ -382,7 +382,7 @@ class App():
         if self.dynamic_schedule_mode.get()==0 and self.reset_flag==0:
 
             if self.schedule_status==1:
-                self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,datetime.datetime.now())
+                self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,get_local_time(int(site['timezone'])))
                 self.next_task_time=self.schedule.all_times[self.task_index]
                 self.next_task_name=str(self.schedule.all_ids[self.task_index])
                 countdown_out=format_countdown(self.next_task_time-now)
@@ -420,11 +420,11 @@ class App():
        
         if self.dynamic_schedule_mode.get()==1 and self.reset_flag==0:
             if self.schedule_status==1:
-                self.task_index=find_next_time_nf(array(self.schedule.all_times),datetime.datetime.now())
+                self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
                 if self.task_index!=-1:
                     self.task_time2=self.schedule.all_times[self.task_index]
-                    countdown_out=format_countdown(self.task_time2-datetime.datetime.now())
-                    self.time_left=self.task_time2-datetime.datetime.now()
+                    countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
+                    self.time_left=self.task_time2-get_local_time(int(site['timezone']))
                     if self.task_run==0 and self.aux_flag==0:
                         if self.task_index==0:
                             self.next_task_name="Waiting"
@@ -561,7 +561,7 @@ class App():
             self.write_output("Loaded Dynamic Schedule")
         if self.dynamic_schedule_mode.get()==0:
             self.write_output("Loaded Regular Schedule")
-        self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,datetime.datetime.now())
+        self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,get_local_time(int(site['timezone'])))
         self.next_task_time=self.schedule.all_times[self.task_index]
         self.next_task_name=str(self.schedule.all_ids[self.task_index])
 
@@ -572,7 +572,7 @@ class App():
     def process_initialisation(self,xpmpath,taskpath,task_type="manual"):
         """function that calls that initiates the process function in various forms dep
         ending on the job conditions"""
-        self.start_time=datetime.datetime.now()
+        self.start_time=get_local_time(int(site['timezone']))
         self.config_all_buttons(state="disabled")
         self.abort_task_button.config(state="normal")
      
@@ -642,7 +642,7 @@ class App():
         
     def create_log_file(self):
         """Redundant? why do we need create log and create schedule?"""
-        now=datetime.datetime.now()
+        now=get_local_time(int(site['timezone']))
         year=str(now.year)
         month="%02d" % now.month
         day="%02d" % now.day
@@ -662,7 +662,7 @@ class App():
 
     def log_schedule(self):
         """See above"""
-        now=datetime.datetime.now()
+        now=get_local_time(int(site['timezone']))
         year=str(now.year)
         month="%02d" % now.month
         day="%02d" % now.day
@@ -760,7 +760,7 @@ class App():
 
     def write_output(self,text):
         """Write text to the output and to the log file"""
-        self.timestamp=format_time(datetime.datetime.now())
+        self.timestamp=format_time(get_local_time(int(site['timezone'])))
         with self.lock:
             self.log=open(self.schedule_pathout,"a")
             self.log.write(self.timestamp+" "+text+"\n")
@@ -777,7 +777,7 @@ class App():
 
     def write_output_screen(self,text):
         """Just write to the screen, redundant?"""
-        self.timestamp=format_time(datetime.datetime.now())
+        self.timestamp=format_time(get_local_time(int(site['timezone'])))
         self.log_out_text.insert("0.0",self.timestamp+" "+text+"\n")
 
 
@@ -1078,7 +1078,7 @@ class App():
             new python process was preferable to a thread, which is still part of the parent process."""
             
             self.abort_task_button.config(state="normal")
-            self.start_time_total=datetime.datetime.now()
+            self.start_time_total=get_local_time(int(site['timezone']))
             experiments=read_task(taskpath+taskname)#genfromtxt(def_paths_files['taskspath']+taskname,dtype=str,skip_header=3,skip_footer=1,unpack=True)[0] #load first column from task file
            
             for p in range(len(experiments)):
@@ -1095,7 +1095,7 @@ class App():
 
                     self.write_output("Starting Xpm - "+experiments[p]+" ("+str(p+1)+"/"+str(len(experiments))+")")
                     
-                    start_time=datetime.datetime.now()
+                    start_time=get_local_time(int(site['timezone']))
                     """start thread monitored process"""
                     t3=threading.Thread(target=self.monitor,args=(xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)))
                     t3.start()
@@ -1105,7 +1105,7 @@ class App():
                         self.root.update()
                         time.sleep(0.2)
 
-                    duration=(datetime.datetime.now()-start_time).seconds
+                    duration=(get_local_time(int(site['timezone']))-start_time).seconds
                     self.write_output("Xpm Complete - "+experiments[p]+" Duration "+str(duration)+ " Secs.")
                     
                        
@@ -1118,7 +1118,7 @@ class App():
             
             self.task_run=5   
            
-            self.end_time=datetime.datetime.now()
+            self.end_time=get_local_time(int(site['timezone']))
             self.timestamp=format_time(self.end_time)
             self.duration=str((self.end_time-self.start_time_total).seconds)
             if self.abort_flag==0:
@@ -1167,7 +1167,7 @@ class App():
 
             self.write_output("Starting Xpm - "+taskname)
             
-            start_time=datetime.datetime.now()
+            start_time=get_local_time(int(site['timezone']))
 
             t3=threading.Thread(target=self.monitor,args=(xpm_path,taskname,str(self.legacy_format_mode.get()),self.schedule_pathout,'1','1',str(self.gui_test_mode),str(self.simulator_mode)))
             t3.start()
@@ -1176,7 +1176,7 @@ class App():
                 self.root.update()
                 time.sleep(0.2)
 
-            duration=(datetime.datetime.now()-start_time).seconds
+            duration=(get_local_time(int(site['timezone']))-start_time).seconds
             self.write_output("Xpm Complete - "+taskname+" Duration "+str(duration)+ " Secs.")
             self.proc.kill() 
             

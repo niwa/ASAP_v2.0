@@ -25,6 +25,9 @@ import ConfigParser
 
 
 
+def get_local_time(timezone):
+    local_time=datetime.datetime.utcnow()+datetime.timedelta(hours=timezone)
+    return local_time
 
 
 def config_out(section,con_in):
