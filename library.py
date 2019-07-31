@@ -212,11 +212,12 @@ now we need a quick thing that calculates how long until a certain sza or time
 """
 
 class load_schedule(object):
-    def __init__(self,dynamic_schedule_mode,schedule_file,lat,lon,utc_offset,psurf,temp):
+    def __init__(self,dynamic_schedule_mode,schedule_file,daily_info):
         self.high_sun_time=0.0
         self.high_sun_sza=0.0
         self.low_sun_time=0.0
         self.low_sun_sza=90.0
+        self.szas=[]
         self.sunrise="00:00:00"
         self.sunset="00:00:00"
         self.day_length="00:00:00"
@@ -224,20 +225,106 @@ class load_schedule(object):
         self.all_ids =[]
         self.task_flags=[]
         self.task_types=[]
+        
         if dynamic_schedule_mode==0:
-            self.high_sun_time,self.high_sun_sza,self.low_sun_time,self.low_sun_sza,self.sunrise,self.sunset,self.day_length,self.all_times, self.all_ids, self.task_flags = expected_time_schedule(schedule_file,lat,lon,utc_offset,psurf,temp)
+            try:
+                self.all_times, self.all_ids, self.task_flags = expected_time_schedule(schedule_file,daily_info)
+            except IOError:
+                pass
+            
         if dynamic_schedule_mode==1:
-            self.high_sun_time,self.high_sun_sza,self.low_sun_time,self.low_sun_sza,self.sunrise,self.sunset,self.day_length, self.all_times, self.all_ids, self.task_flags,self.task_types=dynamic_schedule(schedule_file,lat,lon,utc_offset,psurf,temp)
+            try:
+                self.all_times, self.all_ids, self.task_flags,self.task_types=dynamic_schedule(schedule_file,daily_info)
+            except IOError:
+                pass
+
+                
+class prior_data(object):
+    def __init__(self,schedule):
+        self.sza_ref=schedule.sza_ref
+        self.times_local=schedule.times_local
+            
+class daily_info(object):
+    def __init__(self,lat,lon,utc_offset,psurf,temp):
+        time_utc=datetime.datetime.utcnow()
+        time_local=time_utc+datetime.timedelta(hours=utc_offset) 
+        times_local=[]
+        sza_ref=[]
+        
+        times_array=[]
+        for i in range(86400):
+            times_array.append(datetime.datetime(time_local.year,time_local.month,time_local.day,0,0,0)+datetime.timedelta(seconds=i)-datetime.timedelta(hours=utc_offset))
+            sza_ref.append(sunzen_ephem(times_array[i],lat,lon,psurf,temp)[0])
+            times_local.append(times_array[i]+datetime.timedelta(hours=utc_offset))
+        
+        self.sza_ref=sza_ref
+        self.times_local=times_local
+        sza_time_local=[]
+        
+        
+            
+
+        high_sun_idx=where(array(sza_ref)==min(array(sza_ref)))[0][0]
+        low_sun_idx=where(array(sza_ref)==max(array(sza_ref)))[0][0]    
+        low_sun_idx1=where(array(sza_ref)[0:43200]==max(array(sza_ref)[0:43200]))[0][0]
+        low_sun_idx2=where(array(sza_ref)[43200:]==max(array(sza_ref)[43200:]))[0][0]+43200
+        high_sun_sza=sza_ref[high_sun_idx]
+        low_sun_sza=sza_ref[low_sun_idx]
+        low_sun_sza1=sza_ref[low_sun_idx1]
+        low_sun_sza2=sza_ref[low_sun_idx2]
+
+        high_sun_time=format_time(times_local[high_sun_idx].time())
+        low_sun_time=format_time(times_local[low_sun_idx].time())
+        #if low_sun_sza>=91.:
+        #    low_sun_sza='n/a'
+            #low_sun_time='Horizon'
+        #if high_sun_sza>=91.:
+        #    high_sun_sza='Below'
+        #    high_sun_time='Horizon'
+    
+        #this should be in local time really, whatever timezone it is at 1am when we initialise such that sunrise is always first
+        sunrise_idx=find_nearest(array(sza_ref[0:high_sun_idx]),90.0)
+        sunset_idx=find_nearest(array(sza_ref[high_sun_idx:]),90.0)+high_sun_idx
+        sunrise_s=sza_ref[sunrise_idx]
+        sunset_s=sza_ref[sunset_idx]
+        
+        sunrise=times_local[sunrise_idx].time()
+        sunset=times_local[sunset_idx].time()
+        day_length=str(times_local[sunset_idx]-times_local[sunrise_idx])
+    
+        if sunrise_s<=89 or sunset_s<=89:
+            sunrise="n/a"
+            sunset="n/a"
+            day_length="24:00:00"
+    	
+        if sunrise_s>=91 or sunset_s>=91.:
+            sunset="n/a"
+            sunrise="n/a"
+            day_length="00:00:00"
+        
+        self.sunrise=sunrise
+        self.sunset=sunset
+        self.day_length=day_length
+        self.high_sun_sza=high_sun_sza
+        self.high_sun_time=high_sun_time
+        self.low_sun_time=low_sun_time
+        self.low_sun_sza=low_sun_sza
+        self.high_sun_idx=high_sun_idx
+        self.low_sun_idx=low_sun_idx
+        self.low_sun_idx1=low_sun_idx1
+        self.low_sun_idx2=low_sun_idx2
+        self.low_sun_sza1=low_sun_sza1
+        self.low_sun_sza2=low_sun_sza2
+
+
 
         
-def expected_time_schedule(a,lat,lon,utc_offset,psurf,temp):
+
+def expected_time_schedule(a,daily_info):
     """read schedule 'a' and compute an expected time schedule based on the szas and times required
     """
     #  schedule=genfromtxt(a,skipheader=1,skipfooter=1,dtype=str) #Annoyingly the format of each line is a load of crap, will need to read line by line instead :(
-    time_utc=datetime.datetime.utcnow()
-   
-    time_local=time_utc+datetime.timedelta(hours=utc_offset)
-    
+
     with open(a) as f:
         content1=f.readlines()
     task_type=[]
@@ -255,118 +342,59 @@ def expected_time_schedule(a,lat,lon,utc_offset,psurf,temp):
                 task_sza.append(info[1])
                 task_sza_ap.append(info[2])
             if info[0]=="T":
-                x=datetime.datetime(time_local.year,time_local.month,time_local.day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
+                x=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
                 task_time.append(x)
 #            if info[0]=="C":
 #                x=datetime.datetime(time_local.year,time_local.month,time_local.day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
 #                task_time.append(x) 
         else:
-            continue              
-    times=[]
-    times_utc=[]
+            continue  
 
 
 
-    #day_of_year_local=time_local.timetuple().tm_yday
-    sza_ref=[]
-    sza_ref2=[]
-    
-    times_array=[]
-    for i in range(86400):
-        times_array.append(datetime.datetime(time_local.year,time_local.month,time_local.day,0,0,0)+datetime.timedelta(seconds=i)-datetime.timedelta(hours=utc_offset))
-        sza_ref.append(sunzen_ephem(times_array[i],lat,lon,psurf,temp)[0])
-        times.append(times_array[i]+datetime.timedelta(hours=utc_offset))
-   #this is the utc date, this will need to be updated to whatever supplies the time  
-    
-    
         
-#    for i in range(24)): #1 second resolution
-#        for j in range(60):
-#            for k in range(60):
-#                
-#                #sza_ref.append(float(sunzen_ephem(time_local.year,day_of_year_local,i,j,k,lat,lon)[0]))
-#                sza_ref.append(float(sunzen(time_local.year,day_of_year_local,i,j,k,lat,lon)[0]))
-#                times.append(datetime.datetime(time_local.year,time_local.month,time_local.day,i,j,k))
-    
-    #now we have all the szas, we could do one of two things, create a function that fits the data, or just say find the nearest entry.
-    #creating a function woud be more efficient with a larger number of tasks, its also irrelevant as we arent super concerned with
-    #processing at this point. Lets just find the nearest entry, we will have to be careful to distinguish am and pm
- 
-    #find high sun (mimumum solar zenith angle)
-    sza_time_local=[]
-    high_sun_idx=where(array(sza_ref)==min(array(sza_ref)))[0][0]
-    low_sun_idx=where(array(sza_ref)==max(array(sza_ref)))[0][0]
-    high_sun_sza=sza_ref[high_sun_idx]
-    low_sun_sza=sza_ref[low_sun_idx]
-    high_sun_time=format_time(times[high_sun_idx].time())
-    low_sun_time=format_time(times[low_sun_idx].time())
-    #if low_sun_sza>=91.:
-    #    low_sun_sza='n/a'
-        #low_sun_time='Horizon'
-    #if high_sun_sza>=91.:
-    #    high_sun_sza='Below'
-    #    high_sun_time='Horizon'
-
-    #this should be in local time really, whatever timezone it is at 1am when we initialise such that sunrise is always first
-    sunrise_idx=find_nearest(array(sza_ref[0:high_sun_idx]),90.0)
-    sunset_idx=find_nearest(array(sza_ref[high_sun_idx:]),90.0)+high_sun_idx
-    sunrise_s=sza_ref[sunrise_idx]
-    sunset_s=sza_ref[sunset_idx]
-    
-    sunrise=times[sunrise_idx].time()
-    sunset=times[sunset_idx].time()
-    day_length=str(times[sunset_idx]-times[sunrise_idx])
-
-    if sunrise_s<=89 or sunset_s<=89:
-        sunrise="n/a"
-        sunset="n/a"
-        day_length="24:00:00"
-	
-    if sunrise_s>=91 or sunset_s>=91.:
-        sunset="n/a"
-        sunrise="n/a"
-        day_length="00:00:00"
-        
-        
+    sza_time_local=[]    
     for i in range(len(task_sza)):
         if task_sza_ap[i]=='A':
             #sza_time.append(times[find_nearest(array(sza_ref[0:high_sun_idx]),task_sza[i])])
             
-            index2=find_nearest(array(sza_ref[0:high_sun_idx]),float(task_sza[i]))
-            sza_time_local.append(times[index2])
+            index2=find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(task_sza[i]))
+            sza_time_local.append(daily_info.times_local[index2])
         if task_sza_ap[i]=='P':
-            sza_time_local.append(times[find_nearest(array(sza_ref[high_sun_idx:]),float(task_sza[i]))+high_sun_idx])
+            sza_time_local.append(daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(task_sza[i]))+daily_info.high_sun_idx])
     
     
     #sza_times succesfully obtained now we need to recompile the list of task and times
     
     times_out=[]
-    times_out_utc=[]
-    tasks_out=[]
+
     task_flags=zeros(len(task_type))
     k=0
     j=0
+    sza_out=[]
+    
     for i in range(len(task_type)):
 
         if task_type[i]=='Z':
             times_out.append(sza_time_local[k])
-            if float(task_sza[k])<high_sun_sza:
+            sza_out.append(task_sza[k])
+            if float(task_sza[k])<daily_info.high_sun_sza:
                 task_flags[i]=2
-            if float(task_sza[k])>low_sun_sza:
+            if float(task_sza[k])>daily_info.low_sun_sza:
                 task_flags[i]=2
 
             #times_out_utc.append((sza_time_local[k]+datetime.timedelta(hours=-utc_offset)))
             k=k+1
-        else:    
+        else: 
+            sza_out.append(nan)
+
             times_out.append(task_time[j])
             
             #times_out_utc.append((sza_time_local[j]+datetime.timedelta(hours=-utc_offset)))
             j=j+1
     
     ##Remove tasks that are not in order and create log file with warning
-    removed_time=[]
-    removed_id=[]
-    removed_number=[]
+
     all_times=times_out[:]
     all_ids=task_id[:]
 
@@ -382,7 +410,7 @@ def expected_time_schedule(a,lat,lon,utc_offset,psurf,temp):
 
 #    
    
-    return high_sun_time, high_sun_sza, low_sun_time, low_sun_sza, sunrise,sunset,day_length, all_times, all_ids, task_flags
+    return all_times, all_ids, task_flags
     
     #We have returned all the salient information, local task times, the tasks to be performed, and bonus
     #info like high sun time and sza. we could include sunrise and sunset no problem, its already calculated.
@@ -435,58 +463,15 @@ def read_task(taskname):
     return array(xpms)
     
     
-    
-def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
+   
+def dynamic_schedule(a,daily_info):
 
     """read schedule 'a' and compute an expected time schedule based on the szas and times required
     """
-    time_utc=datetime.datetime.utcnow()
-   
-    time_local=time_utc+datetime.timedelta(hours=utc_offset)
+
     
     database=loadtxt(a,dtype=str,unpack=True,skiprows=2)
-    times_local=[]
-    sza_ref=[] 
-    times_utc=[]
-    
-    for i in range(86400):
-        times_utc.append(datetime.datetime(time_local.year,time_local.month,time_local.day,0,0,0)+datetime.timedelta(seconds=i)-datetime.timedelta(hours=utc_offset))
-        sza_ref.append(sunzen_ephem(times_utc[i],lat,lon,psurf,temp)[0])
-        times_local.append(times_utc[i]+datetime.timedelta(hours=utc_offset))
 
-    sza_time_local=[]
-    high_sun_idx=where(array(sza_ref)==min(array(sza_ref)))[0][0]
-    low_sun_idx1=where(array(sza_ref)[0:43200]==max(array(sza_ref)[0:43200]))[0][0]
-    low_sun_idx2=where(array(sza_ref)[43200:]==max(array(sza_ref)[43200:]))[0][0]+43200
-    high_sun_sza=sza_ref[high_sun_idx]
-    low_sun_sza=sza_ref[low_sun_idx1]
-    low_sun_sza2=sza_ref[low_sun_idx2]
-    high_sun_time=format_time(times_local[high_sun_idx].time())
-    low_sun_time=format_time(times_local[low_sun_idx1].time())
-
-    sunrise_idx=find_nearest(array(sza_ref[0:high_sun_idx]),90.0)
-    sunset_idx=find_nearest(array(sza_ref[high_sun_idx:]),90.0)+high_sun_idx
-    sunrise_s=sza_ref[sunrise_idx]
-    sunset_s=sza_ref[sunset_idx]
-    
-    sunrise=times_local[sunrise_idx].time()
-    sunset=times_local[sunset_idx].time()
-    
-    
-    day_length=str(times_local[sunset_idx]-times_local[sunrise_idx])
-    
-    """Last little thing, may or may not be useful. if nearest value to 90 is above 91 or below 89, 
-    the sun is permanently set or risen. So I return an n/a value for the formatted string."""
-    
-    if sunrise_s<=89 or sunset_s<=89:
-        sunrise="n/a"
-        sunset="n/a"
-        day_length="24:00:00"
-	
-    if sunrise_s>=91 or sunset_s>=91.:
-        sunset="n/a"
-        sunrise="n/a"
-        day_length="00:00:00"
         
     windows_start=[]
     windows_stop=[]
@@ -504,21 +489,21 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
         ranges=database[1:3]
         if database[0]=="Z":
             
-            if float(ranges[0])>high_sun_sza<float(ranges[1]):
-                start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
+            if float(ranges[0])>daily_info.high_sun_sza<float(ranges[1]):
+                start_am=daily_info.times_local[find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(ranges[0]))]
                 windows_start.append(start_am)
                 window_identity.append(0)
-                stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+                stop_pm=daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(ranges[0]))+daily_info.high_sun_idx]
                 windows_stop.append(stop_pm)
-            if float(ranges[0])>high_sun_sza>float(ranges[1]):
-                start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
+            if float(ranges[0])>daily_info.high_sun_sza>float(ranges[1]):
+                start_am=daily_info.times_local[find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(ranges[0]))]
                 windows_start.append(start_am)
                 window_identity.append(0)
-                stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+                stop_pm=daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(ranges[0]))+daily_info.high_sun_idx]
                 windows_stop.append(stop_pm)
         if database[0]=='T':
-            start=datetime.datetime(times_local[0].year,times_local[0].month,times_local[0].day,int(ranges[0][0:2]),int(ranges[0][3:5]),int(ranges[0][6:9]))
-            stop=datetime.datetime(times_local[0].year,times_local[0].month,times_local[0].day,int(ranges[1][0:2]),int(ranges[1][3:5]),int(ranges[1][6:9]))
+            start=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(ranges[0][0:2]),int(ranges[0][3:5]),int(ranges[0][6:9]))
+            stop=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(ranges[1][0:2]),int(ranges[1][3:5]),int(ranges[1][6:9]))
             windows_start.append(start)
             window_identity.append(0)
             windows_stop.append(stop)
@@ -532,80 +517,59 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
             ranges=database[1:3,i]
             if database[0][i]=='Z':
                 """Find the blocks in the morning"""
-                if float(ranges[0])>low_sun_sza>float(ranges[1]):
+                if float(ranges[0])>daily_info.low_sun_sza1>float(ranges[1]):
                     print i,"a"
                     """start time is low sun sza time"""
-                    start_am=times_local[low_sun_idx1]
-                    stop_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[1]))]
+                    start_am=daily_info.times_local[daily_info.low_sun_idx1]
+                    stop_am=daily_info.times_local[find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(ranges[1]))]
                     if stop_am!=start_am:
                         print "1"
                         windows_start.append(start_am)
                         windows_stop.append(stop_am)
                         window_identity.append(i)
                     
-                elif float(ranges[0])>high_sun_sza<float(ranges[1]):
+                elif float(ranges[0])>daily_info.high_sun_sza<float(ranges[1]):
                     print 2
-                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
-                    stop_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[1]))]
+                    start_am=daily_info.times_local[find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(ranges[0]))]
+                    stop_am=daily_info.times_local[find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(ranges[1]))]
                     if stop_am!=start_am:
                         windows_start.append(start_am)
                         windows_stop.append(stop_am)
                         window_identity.append(i)
                     
-                elif float(ranges[0])>high_sun_sza>float(ranges[1]):
+                elif float(ranges[0])>daily_info.high_sun_sza>float(ranges[1]):
                     print i,"d"
-                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
-                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+                    start_am=daily_info.times_local[find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(ranges[0]))]
+                    stop_pm=daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(ranges[0]))+daily_info.high_sun_idx]
                     if stop_pm!=start_am:
                         windows_start.append(start_am)
                         windows_stop.append(stop_pm)
                         window_identity.append(i)
 
-                if float(ranges[0])>low_sun_sza2>float(ranges[1]):
+                if float(ranges[0])>daily_info.low_sun_sza2>float(ranges[1]):
                     """start time is low sun sza time"""
                     print i, "b"
-                    stop_pm=times_local[low_sun_idx2]
-                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
+                    stop_pm=daily_info.times_local[daily_info.low_sun_idx2]
+                    start_pm=daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(ranges[1]))+daily_info.high_sun_idx]
                     if stop_pm!=start_pm:
                         
                         windows_start.append(start_pm)
                         windows_stop.append(stop_pm)
                         window_identity.append(i)
-                elif float(ranges[0])>high_sun_sza<float(ranges[1]):
-                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
-                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
+                elif float(ranges[0])>daily_info.high_sun_sza<float(ranges[1]):
+                    start_pm=daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(ranges[1]))+daily_info.high_sun_idx]
+                    stop_pm=daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(ranges[0]))+daily_info.high_sun_idx]
                     if stop_pm!=start_pm:
                         windows_start.append(start_pm)
                         windows_stop.append(stop_pm)
                         window_identity.append(i)
                                  
-#                if float(ranges[0])>high_sun_sza<float(ranges[1]):
-#                    print i,"c"
-#                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
-#                    windows_start.append(start_am)
-#                    window_identity.append(i)
-#                    stop_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[1]))]
-#                    windows_stop.append(stop_am)
-#                    start_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[1]))+high_sun_idx]
-#                    windows_start.append(start_pm)
-#                    window_identity.append(i)
-#                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
-#                    windows_stop.append(stop_pm)
-#        
-#                if float(ranges[0])>high_sun_sza>float(ranges[1]):
-#                    print i,"d"
-#                    start_am=times_local[find_nearest(array(sza_ref[0:high_sun_idx]),float(ranges[0]))]
-#                    windows_start.append(start_am)
-#                    window_identity.append(i)
-#                    stop_pm=times_local[find_nearest(array(sza_ref[high_sun_idx:]),float(ranges[0]))+high_sun_idx]
-#                    windows_stop.append(stop_pm)
-#                    
 
             
             """Here is the same but simpler because it is for the time specfied windows"""
             if database[0][i]=='T':
-                start=datetime.datetime(times_local[0].year,times_local[0].month,times_local[0].day,int(ranges[0][0:2]),int(ranges[0][3:5]),int(ranges[0][6:9]))
-                stop=datetime.datetime(times_local[0].year,times_local[0].month,times_local[0].day,int(ranges[1][0:2]),int(ranges[1][3:5]),int(ranges[1][6:9]))
+                start=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(ranges[0][0:2]),int(ranges[0][3:5]),int(ranges[0][6:9]))
+                stop=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(ranges[1][0:2]),int(ranges[1][3:5]),int(ranges[1][6:9]))
                 windows_start_m.append(start)
                 window_identity_m.append(i)
                 windows_stop_m.append(stop)
@@ -677,8 +641,6 @@ def dynamic_schedule(a,lat,lon,utc_offset,psurf,temp):
             task_types_out.append(database[0][int(window_identity[i])])
         task_types_out.append("F")
         task_flags=zeros(len(tasknames_out))
-#    all_times=task_exec_time[:]
-#    all_ids=task_exec_name[:]
-    #flag_out=0
-    return high_sun_time, high_sun_sza, low_sun_time, low_sun_sza, sunrise, sunset,day_length, windows_start, tasknames_out, task_flags,task_types_out
+
+    return  windows_start, tasknames_out, task_flags,task_types_out
     

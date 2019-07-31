@@ -5,7 +5,7 @@
     <property name="padding">20</property>
     <property name="width">200</property>
     <layout>
-      <property name="column">0</property>
+      <property name="column">1</property>
       <property name="propagate">True</property>
       <property name="row">0</property>
       <property name="sticky">nesw</property>
@@ -19,6 +19,8 @@
         <layout>
           <property name="column">0</property>
           <property name="columnspan">1</property>
+          <property name="ipadx">6</property>
+          <property name="ipady">4</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="rowspan">1</property>
@@ -336,10 +338,11 @@
         <layout>
           <property name="column">2</property>
           <property name="columnspan">1</property>
+          <property name="ipady">6</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="rowspan">2</property>
-          <property name="sticky">e</property>
+          <property name="sticky">n</property>
         </layout>
         <child>
           <object class="ttk.Button" id="schedule_run_button">
@@ -549,14 +552,14 @@
     </child>
     <child>
       <object class="ttk.Labelframe" id="task_info_frame">
-        <property name="height">200</property>
+        <property name="height">50</property>
         <property name="labelanchor">nw</property>
-        <property name="text" translatable="yes">Task Info.</property>
+        <property name="text" translatable="yes">Schedule and Task Info.</property>
         <property name="width">200</property>
         <layout>
           <property name="column">1</property>
           <property name="ipadx">8</property>
-          <property name="ipady">20</property>
+          <property name="ipady">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="sticky">ne</property>
@@ -652,6 +655,48 @@
               <property name="column">1</property>
               <property name="propagate">True</property>
               <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="Label_1">
+            <property name="text" translatable="yes">Schedule File</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="Label_2">
+            <property name="text" translatable="yes">Dynamic File</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="schedule_combobox">
+            <property name="justify">right</property>
+            <property name="width">22</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="dynamic_combobox">
+            <property name="justify">right</property>
+            <property name="width">22</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
             </layout>
           </object>
         </child>
