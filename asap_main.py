@@ -347,7 +347,7 @@ class App():
             self.aux_label_listbox.delete(0,END)
             for j in range(len(self.aux_labels)):
                 self.aux_label_listbox.insert(END,str(self.aux_labels[j]))
-		try:
+                try:
                     self.aux_data_listbox.insert(END,str(self.aux_data[j]))
                 except:
                     self.aux_data_listbox.insert(END,"nan")
@@ -515,7 +515,6 @@ class App():
                                 self.next_task_name=str(self.schedule.all_ids[self.task_index-1])
                                 self.task_status=self.task_index-1
                                 self.scheduled_task_entry.configure(text=self.next_task_name)
-                                self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
                                 if self.schedule.task_flags[self.task_status]!=-1:
 
                                     self.task_counts[self.task_index-1]+=1
