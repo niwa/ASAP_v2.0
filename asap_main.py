@@ -233,7 +233,8 @@ class App():
 #        
         """Thread out the schedule process"""    
         self.daily_info=None
-
+        self.reset_time=get_local_time(int(site['timezone']))+datetime.timedelta(hours=24)
+        self.reset_time=self.reset_time.replace(hour=1,minute=0,second=0)
         self.t2=threading.Thread(target=self.threaded_solar)
         self.t2.start()
         
@@ -252,6 +253,7 @@ class App():
         self.aux_it_stop=int(aux_tp/(0.2))
         self.aux_it=0
         self.update_aux()
+        
         self.update_clock_main()
         self.root.mainloop()
         
@@ -383,8 +385,9 @@ class App():
         now=get_local_time(int(site['timezone']))
         """Reset Schedule at 1am each day"""        
         
-        if format_time(now)=="01:00:00" and self.reset_flag==0: 
+        if (self.reset_time-now).total_seconds()<0 and self.reset_flag==0: 
             self.reset_flag=1
+            self.reset_time=self.reset_time+datetime.timedelta(hours=24)
             self.daily_info=None
             """Move the stdout to the daily directory"""
             sys.stdout.close()
@@ -512,9 +515,12 @@ class App():
                                 self.next_task_name=str(self.schedule.all_ids[self.task_index-1])
                                 self.task_status=self.task_index-1
                                 self.scheduled_task_entry.configure(text=self.next_task_name)
-                                self.task_counts[self.task_index-1]+=1
                                 self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
-                                self.write_output("counts = "+str(self.task_counts[self.task_index-1]))
+                                if self.schedule.task_flags[self.task_status]!=-1:
+
+                                    self.task_counts[self.task_index-1]+=1
+                                    self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
+                                    self.write_output("counts = "+str(self.task_counts[self.task_index-1]))
                             elif self.time_left<datetime.timedelta(minutes=int(self.dynamic_margin_time)) and self.schedule.task_types[self.task_index]!="T":
                                 current_task=self.task_index
                                 self.next_task_name=str(self.schedule.all_ids[self.task_index])
@@ -1180,70 +1186,87 @@ class App():
             
             self.abort_task_button.config(state="normal")
             self.start_time_total=get_local_time(int(site['timezone']))
-            experiments=read_task(taskpath+taskname)#genfromtxt(def_paths_files['taskspath']+taskname,dtype=str,skip_header=3,skip_footer=1,unpack=True)[0] #load first column from task file
-           
-            for p in range(len(experiments)):
-                xpm_path=xpmpath
-                exists=1
-                if not os.path.exists(xpm_path+experiments[p]):
-
-	            self.write_output("Can't find "+xpm_path+experiments[p])
-                    most_recent_line=tail((self.schedule_pathout),lines=1)
+            if os.path.exists(taskpath+taskname):
+                experiments=read_task(taskpath+taskname)#genfromtxt(def_paths_files['taskspath']+taskname,dtype=str,skip_header=3,skip_footer=1,unpack=True)[0] #load first column from task file
                 
-                elif self.abort_flag==0:
-                    command=['pythonw','exec_xpm.py',xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)]
-                    print command
-
-                    self.write_output("Starting Xpm - "+experiments[p]+" ("+str(p+1)+"/"+str(len(experiments))+")")
+                for p in range(len(experiments)):
+                    xpm_path=xpmpath
+                    exists=1
+                    if not os.path.exists(xpm_path+experiments[p]):
+    
+                        self.write_output("Can't find "+xpm_path+experiments[p])
+                      #  most_recent_line=tail((self.schedule_pathout),lines=1)
                     
-                    start_time=get_local_time(int(site['timezone']))
-                    """start thread monitored process"""
-                    t3=threading.Thread(target=self.monitor,args=(xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)))
-                    t3.start()
-                    """While the thread is going, check on it, once finished proceed"""
-                    while t3.isAlive():
-                        self.update_clock()
-                        self.root.update()
-                        time.sleep(0.2)
-
-                    duration=(get_local_time(int(site['timezone']))-start_time).seconds
-                    self.write_output("Xpm Complete - "+experiments[p]+" Duration "+str(duration)+ " Secs.")
+                    elif self.abort_flag==0:
+                        command=['pythonw','exec_xpm.py',xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)]
+                        print command
+    
+                        self.write_output("Starting Xpm - "+experiments[p]+" ("+str(p+1)+"/"+str(len(experiments))+")")
+                        
+                        start_time=get_local_time(int(site['timezone']))
+                        """start thread monitored process"""
+                        t3=threading.Thread(target=self.monitor,args=(xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)))
+                        t3.start()
+                        """While the thread is going, check on it, once finished proceed"""
+                        while t3.isAlive():
+                            self.update_clock()
+                            self.root.update()
+                            time.sleep(0.2)
+    
+                        duration=(get_local_time(int(site['timezone']))-start_time).seconds
+                        self.write_output("Xpm Complete - "+experiments[p]+" Duration "+str(duration)+ " Secs.")
+                        
+                           
+    
+                    else:
+                        break
                     
-                       
-
-                else:
-                    break
+                self.task_run=5   
+               
+                self.end_time=get_local_time(int(site['timezone']))
+                self.timestamp=format_time(self.end_time)
+                self.duration=str((self.end_time-self.start_time_total).seconds)
+                if self.abort_flag==0:
+                    self.write_output("Job Complete - "+self.taskname+" Duration "+self.duration+ " Secs.")
+                if self.abort_flag==1:
+                    self.write_output("Job Abandoned - "+self.taskname+" Duration "+self.duration+ " Secs. after "+experiments[p-1]+" ("+str(p)+"/"+str(len(experiments))+")")
+                if self.schedule_status==1 and self.sched_run_flag==1:
+                    self.schedule.task_flags[self.task_status]=self.task_run
+                   
+                    self.schedule_listbox.itemconfig(self.task_status,{'bg':self.schedule_colors[self.task_run]})
+                    if self.abort_flag==1:
+                        self.comments[self.task_status]="Abandoned at "+self.timestamp+" Duration "+self.duration+" Secs. after "+experiments[p-1]+" ("+str(p)+"/"+str(len(experiments))+")"
+                    if self.abort_flag==0:
+                        self.comments[self.task_status]="Completed at "+self.timestamp+" Duration "+self.duration+" Secs."
+                    if self.dynamic_schedule_mode.get()==1:
+                        self.comments[self.task_status]="Completed at "+self.timestamp+" Duration "+self.duration+" Secs. Counts "+str(self.task_counts[self.task_status])
+                        if self.abort_flag==1:
+                            self.comments[self.task_status]="Abandoned at "+self.timestamp+" Duration "+self.duration+" Secs.  after "+experiments[p-1]+" ("+str(p)+"/"+str(len(experiments))+") Counts "+str(self.task_counts[self.task_status])
+    
+                    self.durations[self.task_status]=self.duration
+                    self.sched_run_flag=0
                  
+            else:
+                self.end_time=get_local_time(int(site['timezone']))
+                self.timestamp=format_time(self.end_time)
+                self.duration=str((self.end_time-self.start_time_total).seconds)
+                self.write_output("Can't find Task File")
+
+                if self.schedule_status==1 and self.sched_run_flag==1:
+                    self.schedule.task_flags[self.task_status]=-1
+                   
+                    self.schedule_listbox.itemconfig(self.task_status,{'bg':self.schedule_colors[3]})
+                    self.comments[self.task_status]="Couldnt find task"
+
+                    self.durations[self.task_status]=self.duration
+                    self.sched_run_flag=0
             """Various things to do on completion, update comments and colours, write output
             re-enable various buttons..."""
             
-            self.task_run=5   
-           
-            self.end_time=get_local_time(int(site['timezone']))
-            self.timestamp=format_time(self.end_time)
-            self.duration=str((self.end_time-self.start_time_total).seconds)
-            if self.abort_flag==0:
-                self.write_output("Job Complete - "+self.taskname+" Duration "+self.duration+ " Secs.")
-            if self.abort_flag==1:
-                self.write_output("Job Abandoned - "+self.taskname+" Duration "+self.duration+ " Secs. after "+experiments[p-1]+" ("+str(p)+"/"+str(len(experiments))+")")
 
             self.config_all_buttons(state="normal")
 
-            if self.schedule_status==1 and self.sched_run_flag==1:
-                self.schedule.task_flags[self.task_status]=self.task_run
-               
-                self.schedule_listbox.itemconfig(self.task_status,{'bg':self.schedule_colors[self.task_run]})
-                if self.abort_flag==1:
-                    self.comments[self.task_status]="Abandoned at "+self.timestamp+" Duration "+self.duration+" Secs. after "+experiments[p-1]+" ("+str(p)+"/"+str(len(experiments))+")"
-                if self.abort_flag==0:
-                    self.comments[self.task_status]="Completed at "+self.timestamp+" Duration "+self.duration+" Secs."
-                if self.dynamic_schedule_mode.get()==1:
-                    self.comments[self.task_status]="Completed at "+self.timestamp+" Duration "+self.duration+" Secs. Counts "+str(self.task_counts[self.task_status])
-                    if self.abort_flag==1:
-                        self.comments[self.task_status]="Abandoned at "+self.timestamp+" Duration "+self.duration+" Secs.  after "+experiments[p-1]+" ("+str(p)+"/"+str(len(experiments))+") Counts "+str(self.task_counts[self.task_status])
 
-                self.durations[self.task_status]=self.duration
-                self.sched_run_flag=0
             self.task_run=0
             self.manual_task_entry.configure(text="Select Task or Xpm")  
             self.current_status_label.configure(text="Current Status: Waiting for Job")
