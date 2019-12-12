@@ -513,7 +513,7 @@ def dynamic_schedule(a,daily_info):
         task_types_out=[database[0],'F']
         task_flags=[0,0]
     else: 
-        for i in range(len(database)):
+        for i in range(len(database[0])):
             ranges=database[1:3,i]
             if database[0][i]=='Z':
                 """Find the blocks in the morning"""
