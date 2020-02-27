@@ -22,9 +22,22 @@ import os.path
 import subprocess
 import win32com.client
 import ConfigParser
+from threading import Thread
 
-
-
+class ThreadWithReturnValue(Thread):
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs={}, Verbose=None):
+        Thread.__init__(self, group, target, name, args, kwargs, Verbose)
+        self._return = None
+    def run(self):
+        if self._Thread__target is not None:
+            self._return = self._Thread__target(*self._Thread__args,
+                                                **self._Thread__kwargs)
+    def join(self):
+        Thread.join(self)
+        return self._return
+    
+    
 def get_local_time(timezone):
     local_time=datetime.datetime.utcnow()+datetime.timedelta(hours=timezone)
     return local_time
@@ -273,8 +286,8 @@ class daily_info(object):
         low_sun_sza1=sza_ref[low_sun_idx1]
         low_sun_sza2=sza_ref[low_sun_idx2]
 
-        high_sun_time=format_time(times_local[high_sun_idx].time())
-        low_sun_time=format_time(times_local[low_sun_idx].time())
+        high_sun_time=times_local[high_sun_idx]
+        low_sun_time=times_local[low_sun_idx]
         #if low_sun_sza>=91.:
         #    low_sun_sza='n/a'
             #low_sun_time='Horizon'
@@ -441,7 +454,8 @@ def format_countdown(timedelta_obj):
     return out
 
 def format_time(datetime_obj):
-    out =str('%02d:%02d:%02d' % (int(datetime_obj.hour), int(datetime_obj.minute), int(datetime_obj.second)))
+    out =datetime.datetime.strftime(datetime_obj,'%Y/%m/%d %H:%M:%S')
+    #str('%02d:%02d:%02d' % (int(datetime_obj.hour), int(datetime_obj.minute), int(datetime_obj.second)))
     return out
 
 def read_task(taskname):
@@ -517,6 +531,7 @@ def dynamic_schedule(a,daily_info):
             ranges=database[1:3,i]
             if database[0][i]=='Z':
                 """Find the blocks in the morning"""
+                print database[:,i]
                 if float(ranges[0])>daily_info.low_sun_sza1>float(ranges[1]):
                     print i,"a"
                     """start time is low sun sza time"""
