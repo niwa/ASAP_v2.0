@@ -526,11 +526,12 @@ class App():
         """Dynamic Mode"""    
        
         if self.dynamic_schedule_mode.get()==1 and self.reset_flag==0:
+            self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
+            self.task_time2=self.schedule.all_times[self.task_index]
+            countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
+
             if self.schedule_status==1:
-                self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
                 if self.task_index!=-1:
-                    self.task_time2=self.schedule.all_times[self.task_index]
-                    countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
                     self.time_left=self.task_time2-get_local_time(int(site['timezone']))
                     if self.task_run==0 and self.aux_flag==0 and self.initialising_flag==0:
                         if self.task_index==0:
@@ -563,7 +564,9 @@ class App():
                         self.skip_cont=1
                         text="Skipped Task"
                         if self.aux_flag==1:
-                            text=text+" Due to Aux Flag"
+                            text=text+" - Aux Flag"
+                        if self.task_run==1:
+                            text=text+" - Busy"
                         self.write_output(text)
                         self.comments[self.task_index-1]=text
                         self.schedule.task_flags[self.task_index-1]=3
@@ -938,12 +941,14 @@ class App():
         if filename=='':
             filename="Select Task or Xpm"
         path=''
-	for i in range(len(file_path)-1):
+        for i in range(len(file_path)-1):
             path=path+file_path[i]+'/'
         self.manual_task_entry.configure(text=filename)
         print path
-        self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=path,task_type="manual")
-    
+        
+        self.process_initialisation(filename,xpmpath=def_paths_files['xpmpath'],taskpath=path,task_type="manual")
+
+
     def get_filename_xpm(self):
         """Get the xpm to run adn execute"""
         file_path = filedialog.askopenfilename(initialdir=def_paths_files["xpmpath"]).split('/')
