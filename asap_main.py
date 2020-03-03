@@ -109,8 +109,8 @@ class App():
         self.dynamic_schedule_mode.set(int(startup['dynamic_schedule_mode']))
         
         self.run_daily_mode=tk.IntVar()
-        self.run_daily_mode.set(int(startup['run_daily_mode']))
-        
+        #self.run_daily_mode.set(int(startup['run_daily_mode']))
+        self.run_daily_mode.set(1)
         self.legacy_format_mode=tk.IntVar()
         self.legacy_format_mode.set(int(startup['legacy_format_mode']))
         
@@ -526,7 +526,7 @@ class App():
         """Dynamic Mode"""    
        
         if self.dynamic_schedule_mode.get()==1 and self.reset_flag==0:
-            self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
+           # self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
             self.task_time2=self.schedule.all_times[self.task_index]
             countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
 
