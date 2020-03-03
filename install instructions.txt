@@ -15,4 +15,13 @@ install git
 
 clone github repo
 
+git clone -b <branch-name> https://github.com/niwa/ASAP_v2.0.git
+
 copy over old tasks and xpms
+
+
+commit and push updates;
+
+git add <files>
+git commit -m <message>
+git push origin <branch_name>
