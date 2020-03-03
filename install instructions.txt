@@ -1,0 +1,18 @@
+get latest conda - not from software center!
+
+
+check if spyder works
+
+
+run conda prompt as admin
+
+conda install -c astropy pyephem
+pip install pygubu
+
+add python to system variables
+
+install git
+
+clone github repo
+
+copy over old tasks and xpms
