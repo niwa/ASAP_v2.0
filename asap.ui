@@ -429,9 +429,7 @@
           <object class="ttk.Checkbutton" id="run_daily_checkbutton">
             <property name="text" translatable="yes">Run Daily</property>
             <layout>
-              <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">8</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -442,7 +440,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">9</property>
+              <property name="row">8</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -453,7 +451,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">10</property>
+              <property name="row">9</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -464,7 +462,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">11</property>
+              <property name="row">10</property>
               <property name="sticky">w</property>
             </layout>
           </object>
