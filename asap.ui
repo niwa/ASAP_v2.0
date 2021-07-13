@@ -9,6 +9,17 @@
       <property name="propagate">True</property>
       <property name="row">0</property>
       <property name="sticky">nesw</property>
+      <columns>
+        <column id="0">
+          <property name="pad">5</property>
+        </column>
+        <column id="1">
+          <property name="pad">5</property>
+        </column>
+        <column id="2">
+          <property name="pad">5</property>
+        </column>
+      </columns>
     </layout>
     <child>
       <object class="ttk.Labelframe" id="current_info_frame">
@@ -19,58 +30,48 @@
         <layout>
           <property name="column">0</property>
           <property name="columnspan">1</property>
-          <property name="ipadx">6</property>
           <property name="ipady">4</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="rowspan">1</property>
-          <property name="sticky">nw</property>
+          <property name="sticky">nsw</property>
         </layout>
         <child>
           <object class="ttk.Label" id="utctime_label">
-            <property name="justify">center</property>
+            <property name="justify">left</property>
             <property name="text" translatable="yes">UTC Time</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
+              <property name="sticky">w</property>
             </layout>
           </object>
         </child>
         <child>
           <object class="ttk.Label" id="localtime_label">
+            <property name="justify">left</property>
             <property name="text" translatable="yes">Local Time</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
+              <property name="sticky">w</property>
             </layout>
           </object>
         </child>
         <child>
           <object class="ttk.Label" id="sza_label">
-            <property name="font">TkSmallCaptionFont</property>
-            <property name="text" translatable="yes">SZA</property>
+            <property name="justify">left</property>
+            <property name="text" translatable="yes">SZA, Elev.</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
               <property name="propagate">True</property>
               <property name="row">2</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Label" id="eleveation_label">
-            <property name="anchor">center</property>
-            <property name="relief">flat</property>
-            <property name="text" translatable="yes">Elevation</property>
-            <layout>
-              <property name="column">0</property>
-              <property name="padx">5</property>
-              <property name="propagate">True</property>
-              <property name="row">3</property>
+              <property name="sticky">w</property>
             </layout>
           </object>
         </child>
@@ -79,10 +80,11 @@
             <property name="anchor">center</property>
             <property name="justify">center</property>
             <property name="relief">sunken</property>
-            <property name="text" translatable="yes">00:00:00</property>
-            <property name="width">10</property>
+            <property name="text" translatable="yes">2020/09/05 00:00:00</property>
+            <property name="width">20</property>
             <layout>
               <property name="column">1</property>
+              <property name="columnspan">2</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
             </layout>
@@ -92,10 +94,11 @@
           <object class="ttk.Label" id="localtime_entry">
             <property name="anchor">center</property>
             <property name="relief">sunken</property>
-            <property name="text" translatable="yes">00:00:00</property>
-            <property name="width">10</property>
+            <property name="text" translatable="yes">2020/09/05 00:00:00</property>
+            <property name="width">20</property>
             <layout>
               <property name="column">1</property>
+              <property name="columnspan">2</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
             </layout>
@@ -107,11 +110,12 @@
             <property name="justify">center</property>
             <property name="relief">sunken</property>
             <property name="text" translatable="yes">000.00</property>
-            <property name="width">10</property>
+            <property name="width">9</property>
             <layout>
               <property name="column">1</property>
               <property name="propagate">True</property>
               <property name="row">2</property>
+              <property name="sticky">w</property>
             </layout>
           </object>
         </child>
@@ -121,11 +125,12 @@
             <property name="justify">center</property>
             <property name="relief">sunken</property>
             <property name="text" translatable="yes">000.00</property>
-            <property name="width">10</property>
+            <property name="width">9</property>
             <layout>
-              <property name="column">1</property>
+              <property name="column">2</property>
               <property name="propagate">True</property>
-              <property name="row">3</property>
+              <property name="row">2</property>
+              <property name="sticky">e</property>
             </layout>
           </object>
         </child>
@@ -141,10 +146,9 @@
           <property name="column">1</property>
           <property name="columnspan">1</property>
           <property name="ipadx">0</property>
-          <property name="ipady">32</property>
           <property name="propagate">True</property>
           <property name="row">1</property>
-          <property name="sticky">ne</property>
+          <property name="sticky">ns</property>
           <rows>
             <row id="0">
               <property name="minsize">1</property>
@@ -342,7 +346,7 @@
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="rowspan">2</property>
-          <property name="sticky">n</property>
+          <property name="sticky">nse</property>
         </layout>
         <child>
           <object class="ttk.Button" id="schedule_run_button">
@@ -425,9 +429,7 @@
           <object class="ttk.Checkbutton" id="run_daily_checkbutton">
             <property name="text" translatable="yes">Run Daily</property>
             <layout>
-              <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">8</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -438,7 +440,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">9</property>
+              <property name="row">8</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -449,7 +451,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">10</property>
+              <property name="row">9</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -460,7 +462,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">11</property>
+              <property name="row">10</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -479,31 +481,15 @@
       </object>
     </child>
     <child>
-      <object class="ttk.Separator" id="Separator_5">
-        <property name="orient">horizontal</property>
-        <layout>
-          <property name="column">2</property>
-          <property name="columnspan">1</property>
-          <property name="padx">5</property>
-          <property name="pady">5</property>
-          <property name="propagate">True</property>
-          <property name="row">0</property>
-          <property name="rowspan">4</property>
-        </layout>
-      </object>
-    </child>
-    <child>
       <object class="ttk.Labelframe" id="log_out_frame">
-        <property name="height">200</property>
         <property name="text" translatable="yes">Command Log and Output</property>
-        <property name="width">400</property>
         <layout>
           <property name="column">1</property>
           <property name="columnspan">2</property>
           <property name="propagate">True</property>
           <property name="row">2</property>
           <property name="rowspan">1</property>
-          <property name="sticky">ne</property>
+          <property name="sticky">ns</property>
         </layout>
         <child>
           <object class="tk.Scrollbar" id="log_out_scrollbar">
@@ -511,10 +497,9 @@
             <bind add="" handler="" sequence="" />
             <layout>
               <property name="column">1</property>
-              <property name="ipadx">1</property>
-              <property name="ipady">71</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
+              <property name="sticky">ns</property>
             </layout>
           </object>
         </child>
@@ -522,11 +507,14 @@
           <object class="tk.Text" id="log_out_text">
             <property name="height">10</property>
             <property name="text" translatable="yes">Feel free to mess around with the layout, just as long as you do not change the widget ids, or if you do, change them in the brukerpy_main.py script as well</property>
-            <property name="width">60</property>
+            <property name="width">55</property>
             <layout>
               <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
+              <property name="sticky">ns</property>
             </layout>
           </object>
         </child>
@@ -543,10 +531,9 @@
         <layout>
           <property name="column">1</property>
           <property name="columnspan">2</property>
-          <property name="padx">15</property>
+          <property name="padx">0</property>
           <property name="propagate">True</property>
           <property name="row">3</property>
-          <property name="sticky">s</property>
         </layout>
       </object>
     </child>
@@ -562,7 +549,7 @@
           <property name="ipady">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
-          <property name="sticky">ne</property>
+          <property name="sticky">ns</property>
           <rows>
             <row id="0">
               <property name="minsize">0</property>
@@ -706,22 +693,23 @@
       <object class="ttk.Labelframe" id="schedule_frame">
         <property name="height">200</property>
         <property name="text" translatable="yes">Schedule</property>
-        <property name="width">192</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">1</property>
           <property name="rowspan">3</property>
-          <property name="sticky">nw</property>
+          <property name="sticky">ns</property>
         </layout>
         <child>
           <object class="tk.Listbox" id="schedule_listbox">
-            <property name="height">22</property>
-            <property name="width">20</property>
+            <property name="height">27</property>
+            <property name="width">31</property>
             <layout>
               <property name="column">0</property>
+              <property name="padx">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
+              <property name="sticky">e</property>
             </layout>
           </object>
         </child>
@@ -730,10 +718,9 @@
             <property name="orient">horizontal</property>
             <layout>
               <property name="column">0</property>
-              <property name="ipadx">49</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
-              <property name="sticky">e</property>
+              <property name="sticky">ew</property>
             </layout>
           </object>
         </child>
@@ -742,10 +729,10 @@
             <property name="orient">vertical</property>
             <layout>
               <property name="column">1</property>
-              <property name="ipady">191</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
               <property name="rowspan">1</property>
+              <property name="sticky">nse</property>
             </layout>
           </object>
         </child>

@@ -109,8 +109,8 @@ class App():
         self.dynamic_schedule_mode.set(int(startup['dynamic_schedule_mode']))
         
         self.run_daily_mode=tk.IntVar()
-        self.run_daily_mode.set(int(startup['run_daily_mode']))
-        
+        #self.run_daily_mode.set(int(startup['run_daily_mode']))
+        self.run_daily_mode.set(1)
         self.legacy_format_mode=tk.IntVar()
         self.legacy_format_mode.set(int(startup['legacy_format_mode']))
         
@@ -184,7 +184,9 @@ class App():
         self.abort_flag=0
         self.skip_cont=0
         self.reset_flag=1
+        self.initialising_flag=0
         
+
         self.schedule_status=int(startup['schedule_status'])
         self.gui_test_mode=int(startup['gui_test_mode'])
         self.simulator_mode=int(startup['simulator_mode'])
@@ -221,6 +223,11 @@ class App():
         if self.schedule_status==0:
             self.schedule_run_button.config(text="Start Schedule")
             self.dynamic_mode_checkbutton.configure(state="normal")
+            self.task_countdown_entry.config(background='red')
+            self.scheduled_task_entry.config(background='red')
+        else:
+            self.task_countdown_entry.config(background='green')
+            self.scheduled_task_entry.config(background='green')
         self.create_log_file()
         self.write_output("Welcome to ASAP") 
         
@@ -235,8 +242,7 @@ class App():
         self.daily_info=None
         self.reset_time=get_local_time(int(site['timezone']))+datetime.timedelta(hours=24)
         self.reset_time=self.reset_time.replace(hour=1,minute=0,second=0)
-        self.t2=threading.Thread(target=self.threaded_solar)
-        self.t2.start()
+        
         
         
         """Configure the auxiliary data, we first need to check if the ability to
@@ -253,7 +259,8 @@ class App():
         self.aux_it_stop=int(aux_tp/(0.2))
         self.aux_it=0
         self.update_aux()
-        
+        self.threaded_solar()
+
         self.update_clock_main()
         self.root.mainloop()
         
@@ -263,8 +270,8 @@ class App():
             if selected!=self.schedule_file:
                 self.schedule_file=selected
                 if self.dynamic_schedule_mode.get()==0:
-                    t2=threading.Thread(target=self.threaded_solar)
-                    t2.start()  
+                    self.threaded_solar()
+                    
         
     def dynamic_selected(self,event=None):
         if event:
@@ -272,8 +279,8 @@ class App():
             if selected!=self.dynamic_file:
                 self.dynamic_file=selected
                 if self.dynamic_schedule_mode.get()==1:
-                    t2=threading.Thread(target=self.threaded_solar)
-                    t2.start()  
+                    self.threaded_solar()
+                    
             
     def get_combofiles(self):
         files = [f for f in os.listdir(def_paths_files['schedulespath']) if os.path.isfile(os.path.join(def_paths_files['schedulespath'], f))]
@@ -311,8 +318,8 @@ class App():
             text="Dynamic schedule mode disabled"
 
         self.write_output(text)
-        self.t2=threading.Thread(target=self.threaded_solar)
-        self.t2.start()
+        self.threaded_solar()
+
         
     def use_aux_stat(self):
         if self.use_aux_flag_mode.get()==1:
@@ -356,12 +363,13 @@ class App():
         
         """Cunningly adds an extra message (or removes it when turned off) if 
         the aux flag has been used to stop a task"""
-        text=self.current_status_label.cget("text")
-        if " - Schedule halted due to Aux" not in text and self.aux_flag==1:
-            text = text+" - Schedule halted due to Aux"
-        if " - Schedule halted due to Aux" in text and self.aux_flag==0:
-            text=text[:-20]
-        self.current_status_label.configure(text=text)
+        if self.schedule_status==1:
+            text=self.current_status_label.cget("text")
+            if " - Schedule halted due to Aux" not in text and self.aux_flag==1:
+                text = text+" - Schedule halted due to Aux"
+            if " - Schedule halted due to Aux" in text and self.aux_flag==0:
+                text=text.split('-')[0]
+            self.current_status_label.configure(text=text)
     
         
        #self.write_output(str( self.aux_flag))
@@ -390,14 +398,14 @@ class App():
             self.reset_time=self.reset_time+datetime.timedelta(hours=24)
             self.daily_info=None
             """Move the stdout to the daily directory"""
-            sys.stdout.close()
-            if os.path.exists(log_path+"gui_log.dat"):
-                move(log_path+"gui_log.dat",os.path.dirname(self.schedule_pathout)+"\\gui.log")  
-            if os.path.exists(log_path+"exec_log.dat"):
-                move(log_path+"exec_log.dat",os.path.dirname(self.schedule_pathout)+"\\exec.log")  
-                
-            sys.stdout= open(log_path+"gui_log.dat","w")
-            sys.stderr=sys.stdout
+#            sys.stdout.close()
+#            if os.path.exists(log_path+"gui_log.dat"):
+#                move(log_path+"gui_log.dat",os.path.dirname(self.schedule_pathout)+"\\gui.log")  
+#            if os.path.exists(log_path+"exec_log.dat"):
+#                move(log_path+"exec_log.dat",os.path.dirname(self.schedule_pathout)+"\\exec.log")  
+#                
+#            sys.stdout= open(log_path+"gui_log.dat","a")
+#            sys.stderr=sys.stdout
             
             """Begin reset"""
             year=str(now.year)
@@ -437,45 +445,66 @@ class App():
                 self.clean_up()
             
             """May as well calculate the next schedule anyway"""
-            t2=threading.Thread(target=self.threaded_solar)
-            t2.start()   
+            self.threaded_solar()
+              
 
         """Seperate Execution for different Schedule Modes"""
         
         """Basic Mode"""  
         
         if self.dynamic_schedule_mode.get()==0 and self.reset_flag==0:
-
-            if self.schedule_status==1:
+            
+           # if self.schedule_status==1:
 #                self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,get_local_time(int(site['timezone'])))
 #                self.next_task_time=self.schedule.all_times[self.task_index]
 #                self.next_task_name=str(self.schedule.all_ids[self.task_index])
-                countdown_out=format_countdown(self.next_task_time-now)
-                if self.task_index==-1:
-                    countdown_out='00:00:00'
-                    self.next_task_name='Schedule Complete'
+            countdown_out=format_countdown(self.next_task_time-now)
+            if self.task_index==-1:
+                countdown_out='00:00:00'
+                self.next_task_name='Schedule Complete'
+                self.scheduled_task_entry.configure(text=self.next_task_name)
+
+            elif (self.next_task_time-now).total_seconds()<0:
+                print (self.next_task_time-now).total_seconds(),self.next_task_time
+                taskname=self.next_task_name    
+                task_id=self.task_index
+                self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,now+datetime.timedelta(seconds=10))
+                self.next_task_time=self.schedule.all_times[self.task_index]
+                self.next_task_name=str(self.schedule.all_ids[self.task_index])
+                self.scheduled_task_entry.configure(text=self.next_task_name)
+
+                if self.schedule_status==1:
+
+                    if self.task_run==0 and self.aux_flag==0 and self.initialising_flag==0:
+                        self.task_status=task_id      
+                        self.process_initialisation(taskname,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="basic_schedule")
                     
-                elif (self.next_task_time-now).total_seconds()<0:
-                
-                
-                    if self.task_run==0 and self.aux_flag==0:
-                        self.task_status=self.task_index         
-                        self.scheduled_task_entry.configure(text=self.next_task_name)
-                        self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="basic_schedule")
-                    
-                    if self.task_run!=0 or self.aux_flag==1:
-                        text="Skipped Task"
-                        if self.aux_flag==1:
-                            text=text+" Due to Aux Flag"
+                    elif self.initialising_flag==0:
+                        if self.task_run!=0 or self.aux_flag==1:
+                            text="Skipped "+taskname+' '+str(task_id)+' '
+                            if self.aux_flag==1:
+                                text=text+" - Aux Flag"
+                            if self.task_run==1:
+                                text=text+" - Busy"
+                            print self.next_task_time
                             self.write_output(text)
-                            self.comments[self.task_index]=text
-                            self.schedule.task_flags[self.task_index]=3
-                            self.schedule_listbox.itemconfig(self.task_index,{'bg':self.schedule_colors[3]})
+                            self.comments[task_id]=text
+                            self.schedule.task_flags[task_id]=3
+                            self.schedule_listbox.itemconfig(task_id,{'bg':self.schedule_colors[3]})
                    
-                    print 'hello hello'
-                    self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,now)
-                    self.next_task_time=self.schedule.all_times[self.task_index]
-                    self.next_task_name=str(self.schedule.all_ids[self.task_index])
+
+                else:
+                    text="Missed "+taskname+' '+str(task_id)+' - Schedule Not Running'
+     
+                    print self.next_task_time
+                    self.write_output(text)
+                    self.comments[task_id]=text
+                    self.schedule.task_flags[task_id]=3
+                    self.schedule_listbox.itemconfig(task_id,{'bg':'yellow'})
+                    
+#                self.task_index=find_next_time(array(self.schedule.all_times),self.schedule.task_flags,now+datetime.timedelta(seconds=10))
+#                self.next_task_time=self.schedule.all_times[self.task_index]
+#                self.next_task_name=str(self.schedule.all_ids[self.task_index])
 
                     #self.skip_cont=1
 #                elif (self.next_task_time-now).total_seconds<0  and self.task_run!=0:# and self.skip_cont==0:
@@ -493,49 +522,66 @@ class App():
 
 #    
 
-                self.scheduled_task_entry.configure(text=self.next_task_name)
                 
         """Dynamic Mode"""    
        
         if self.dynamic_schedule_mode.get()==1 and self.reset_flag==0:
-            if self.schedule_status==1:
-                self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
-                if self.task_index!=-1:
-                    self.task_time2=self.schedule.all_times[self.task_index]
-                    countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
-                    self.time_left=self.task_time2-get_local_time(int(site['timezone']))
-                    if self.task_run==0 and self.aux_flag==0:
-                        if self.task_index==0:
-                            self.next_task_name="Waiting"
-                            self.scheduled_task_entry.configure(text=self.next_task_name)
-                    
-                        else:
-                        
-                            if self.time_left>datetime.timedelta(minutes=int(self.dynamic_margin_time)) or (self.task_counts[self.task_index-1]>0 and self.time_left>datetime.timedelta(seconds=int(self.durations[self.task_index-1])) and self.schedule.task_types[self.task_index]!="T"):
-                                self.next_task_name=str(self.schedule.all_ids[self.task_index-1])
-                                self.task_status=self.task_index-1
-                                self.scheduled_task_entry.configure(text=self.next_task_name)
-                                if self.schedule.task_flags[self.task_status]!=-1:
+            self.task_index=find_next_time_nf(array(self.schedule.all_times),get_local_time(int(site['timezone'])))
+            self.task_time2=self.schedule.all_times[self.task_index]
+            countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
 
-                                    self.task_counts[self.task_index-1]+=1
-                                    self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
-                                    self.write_output("counts = "+str(self.task_counts[self.task_index-1]))
-                            elif self.time_left<datetime.timedelta(minutes=int(self.dynamic_margin_time)) and self.schedule.task_types[self.task_index]!="T":
-                                current_task=self.task_index
-                                self.next_task_name=str(self.schedule.all_ids[self.task_index])
+            if self.schedule_status==1:
+                if self.task_index!=-1:
+                    self.time_left=self.task_time2-get_local_time(int(site['timezone']))
+
+
+                    if self.aux_flag==0 or self.schedule.task_types[self.task_index-1]=="C"
+                        if self.task_run==0 and self.initialising_flag==0:
+                            if self.task_index==0:
+                                self.next_task_name="Waiting"
                                 self.scheduled_task_entry.configure(text=self.next_task_name)
-                                self.task_status=self.task_index
-                                self.task_counts[self.task_index]+=1
-                                self.write_output("counts = "+str(self.task_counts[self.task_index]))
-                                self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
-                    if self.task_run==0 and self.aux_flag==1:
+
+                            else:
+                                if self.schedule.task_types[self.task_index-1]=="C":
+                                    if self.task_counts[self.task_index-1]==0:
+                                        self.next_task_name = str(self.schedule.all_ids[self.task_index - 1])
+                                        self.task_status = self.task_index - 1
+                                        self.scheduled_task_entry.configure(text=self.next_task_name)
+                                        if self.schedule.task_flags[self.task_status] != -1:
+                                            self.task_counts[self.task_index - 1] += 1
+                                            self.process_initialisation(self.next_task_name,
+                                                                        xpmpath=def_paths_files['xpmpath'],
+                                                                        taskpath=def_paths_files["taskspath"],
+                                                                        task_type="dynamic_schedule")
+                                            self.write_output("counts = " + str(self.task_counts[self.task_index - 1]))
+
+                                elif self.time_left>datetime.timedelta(minutes=int(self.dynamic_margin_time)) or (self.task_counts[self.task_index-1]>0 and self.time_left>datetime.timedelta(seconds=int(self.durations[self.task_index-1])) and self.schedule.task_types[self.task_index]!="T"):
+                                    self.next_task_name=str(self.schedule.all_ids[self.task_index-1])
+                                    self.task_status=self.task_index-1
+                                    self.scheduled_task_entry.configure(text=self.next_task_name)
+                                    if self.schedule.task_flags[self.task_status]!=-1:
+
+                                        self.task_counts[self.task_index-1]+=1
+                                        self.process_initialisation(self.next_task_name,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
+                                        self.write_output("counts = "+str(self.task_counts[self.task_index-1]))
+                                elif self.time_left<datetime.timedelta(minutes=int(self.dynamic_margin_time)) and self.schedule.task_types[self.task_index]!="T":
+                                    current_task=self.task_index
+                                    self.next_task_name=str(self.schedule.all_ids[self.task_index])
+                                    self.scheduled_task_entry.configure(text=self.next_task_name)
+                                    self.task_status=self.task_index
+                                    self.task_counts[self.task_index]+=1
+                                    self.write_output("counts = "+str(self.task_counts[self.task_index]))
+                                    self.process_initialisation(self.next_task_name,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
+                        if self.task_run==0 and self.aux_flag==1:
                             self.next_task_name="Waiting"
                             self.scheduled_task_entry.configure(text=self.next_task_name)     
                     elif self.time_left>=datetime.timedelta(seconds=1) and self.task_run!=0 and self.skip_cont==0 and self.task_counts[self.task_index-1]==0:
                         self.skip_cont=1
                         text="Skipped Task"
                         if self.aux_flag==1:
-                            text=text+" Due to Aux Flag"
+                            text=text+" - Aux Flag"
+                        if self.task_run==1:
+                            text=text+" - Busy"
                         self.write_output(text)
                         self.comments[self.task_index-1]=text
                         self.schedule.task_flags[self.task_index-1]=3
@@ -546,8 +592,8 @@ class App():
                     self.next_task_name='Schedule Complete'
                     self.scheduled_task_entry.configure(text=self.next_task_name)
         
-        if self.schedule_status==0:
-            countdown_out='  n/a   '
+#        if self.schedule_status==0:
+#            countdown_out='  n/a   '
 	    
 #            self.next_task_name='Schedule Stopped'
 #            self.scheduled_task_entry.configure(text=self.next_task_name)
@@ -580,7 +626,7 @@ class App():
     def on_close(self):
         """Function to decide what to do when the gui is closed"""
         self.clean_up()
-        self.write_output("ASAP Closed")
+      #  self.write_output("ASAP Closed")
         self.root.destroy()
         
     def clean_up(self):
@@ -624,12 +670,19 @@ class App():
 #        self.schedule=None
         if self.daily_info==None:
             self.write_output("Calculating Daily Information, Please Wait")
-            self.daily_info=daily_info(float(site['latitude']),float(site['longe']),float(site['timezone']),float(site['pressure']),float(site['temperature']))
+            #self.daily_info=daily_info(float(site['latitude']),float(site['longe']),float(site['timezone']),float(site['pressure']),float(site['temperature']))
+            #self.update_info()
+            t2=ThreadWithReturnValue(target=daily_info,args=(float(site['latitude']),float(site['longe']),float(site['timezone']),float(site['pressure']),float(site['temperature'])))
+            t2.start()
+            """While the thread is going, check on it, once finished proceed"""
+            while t2.isAlive():
+                self.update_clock()
+                self.root.update()
+                time.sleep(0.2)
+            self.daily_info=t2.join()
             self.update_info()
-
         if self.dynamic_schedule_mode.get()==1:
             self.write_output("Calculating Dynamic Schedule")
-
             self.schedule=load_schedule(1,def_paths_files['schedulespath']+self.dynamic_file,self.daily_info)
             self.task_counts=zeros(len(self.schedule.all_times))
             self.durations=[datetime.timedelta(seconds=0)]*len(self.schedule.all_times) 
@@ -649,7 +702,7 @@ class App():
             self.schedule_listbox.delete(0,END)
     
             for i in range(len(self.schedule.all_times)):
-                self.schedule_listbox.insert(END,str(format_time(self.schedule.all_times[i]))+" "+str(self.schedule.all_ids[i]))
+                self.schedule_listbox.insert(END,datetime.datetime.strftime(self.schedule.all_times[i],'%H:%M:%S')+" - "+str(self.schedule.all_ids[i]))
                 self.schedule_listbox.itemconfig(i,{'bg':self.schedule_colors[int(self.schedule.task_flags[i])]})
             self.write_output("Completed")
     
@@ -675,17 +728,19 @@ class App():
         self.dynamic_mode_checkbutton.config(state="normal")
         self.dynamic_combobox.config(state='normal')
         self.schedule_combobox.config(state='normal')
-    def process_initialisation(self,xpmpath,taskpath,task_type="manual"):
+        
+    def process_initialisation(self,taskname,xpmpath,taskpath,task_type="manual"):
         """function that calls that initiates the process function in various forms dep
         ending on the job conditions"""
+        self.initialising_flag=1
         self.start_time=get_local_time(int(site['timezone']))
         self.config_all_buttons(state="disabled")
         self.abort_task_button.config(state="normal")
-     
+        self.taskname=taskname
         
         if task_type=="manual":
             print "here"
-            self.taskname=self.manual_task_entry.cget("text")
+           # self.taskname=self.manual_task_entry.cget("text")
             if self.taskname=="Select Task or Xpm":
                 self.write_output("No Task or Xpm selected")
                 self.config_all_buttons(state="normal")
@@ -707,7 +762,7 @@ class App():
         if task_type=="basic_schedule":
 #            self.task_run=1
 #            self.sched_run_flag=1
-            self.taskname=self.scheduled_task_entry.cget("text")
+          #  self.taskname=self.scheduled_task_entry.cget("text")
             #self.timestamp=format_time(self.start_time)
             self.write_output("Running Job - "+str(self.taskname))#+" Macro ID - "+str(self.macro_id))
             self.task_run=1
@@ -727,7 +782,7 @@ class App():
         if task_type=="dynamic_schedule":
             self.task_run=1
             self.sched_run_flag=1
-            self.taskname=self.scheduled_task_entry.cget("text")
+            #self.taskname=self.scheduled_task_entry.cget("text")
             self.timestamp=format_time(self.start_time)
             self.write_output("Running Job - "+str(self.taskname))#+" Macro ID - "+str(self.macro_id))
             self.current_status_label.configure(text="Current Status: Running Dynamic Job")
@@ -741,7 +796,8 @@ class App():
            # self.t1=threading.Thread(target=self.begin_opus_process,args=(self.taskname,xpmpath,taskpath,))
            # self.t1.start()
         
-       
+        
+ 
 
        # self.root.after(100, self.check_run)
         
@@ -868,6 +924,8 @@ class App():
         """Write text to the output and to the log file"""
         self.timestamp=format_time(get_local_time(int(site['timezone'])))
         with self.lock:
+            self.create_log_file()
+
             self.log=open(self.schedule_pathout,"a")
             self.log.write(self.timestamp+" "+text+"\n")
             self.log.close()
@@ -898,12 +956,14 @@ class App():
         if filename=='':
             filename="Select Task or Xpm"
         path=''
-	for i in range(len(file_path)-1):
+        for i in range(len(file_path)-1):
             path=path+file_path[i]+'/'
         self.manual_task_entry.configure(text=filename)
         print path
-        self.process_initialisation(xpmpath=def_paths_files['xpmpath'],taskpath=path,task_type="manual")
-    
+        
+        self.process_initialisation(filename,xpmpath=def_paths_files['xpmpath'],taskpath=path,task_type="manual")
+
+
     def get_filename_xpm(self):
         """Get the xpm to run adn execute"""
         file_path = filedialog.askopenfilename(initialdir=def_paths_files["xpmpath"]).split('/')
@@ -916,7 +976,7 @@ class App():
             #print path
         
         self.manual_task_entry.configure(text=filename)  
-        self.process_initialisation(xpmpath=path,taskpath=def_paths_files["taskspath"],task_type="manual")
+        self.process_initialisation(filename,xpmpath=path,taskpath=def_paths_files["taskspath"],task_type="manual")
         
     def toggle_schedule_run(self):
         """Turns the schedule on and off and reload the schedule if it has changed
@@ -929,34 +989,39 @@ class App():
             self.dynamic_mode_checkbutton.config(state="normal")
             self.dynamic_combobox.config(state='normal')
             self.schedule_combobox.config(state='normal')
+            self.task_countdown_entry.config(background='red')
+            self.scheduled_task_entry.config(background='red')
+            self.current_status_label.configure(text="Current Status: Idle")
+
         elif self.schedule_status==0:
             self.write_output("Schedule Started")
             self.dynamic_combobox.config(state='disabled')
             self.schedule_combobox.config(state='disabled')
             self.dynamic_mode_checkbutton.config(state="disabled")
             self.schedule_run_button.config(text="Stop Schedule")
-
+            self.task_countdown_entry.config(background='green')
+            self.scheduled_task_entry.config(background='green')
             self.schedule_status=1
-            
+            self.current_status_label.configure(text="Current Status: Waiting for Job")
+
             if self.current_schedule_mode!=self.dynamic_schedule_mode.get():
                 self.current_schedule_mode=self.dynamic_schedule_mode.get()
                 if self.dynamic_schedule_mode.get()==1:
                     self.reset_flag=1
 
-                    t2=threading.Thread(target=self.threaded_solar)
-                    t2.start()                   
+                    self.threaded_solar()               
                     self.task_counts=zeros(len(self.schedule.all_times))
                     self.durations=[datetime.timedelta(seconds=0)]*len(self.schedule.all_times)
                 else:
                     self.reset_flag=1
 
-                    t2=threading.Thread(target=self.threaded_solar)
-                    t2.start()                    
+                    self.threaded_solar()               
+                 
                     self.durations=[datetime.timedelta(seconds=0)]*len(self.schedule.all_times)
 
                     
                 for i in range(len(self.schedule.all_times)):
-                    self.schedule_listbox.insert(END,str(format_time(self.schedule.all_times[i]))+" "+str(self.schedule.all_ids[i]))
+                    self.schedule_listbox.insert(END,datetime.datetime.strftime(self.schedule.all_times[i],'%H:%M:%S')+" - "+str(self.schedule.all_ids[i]))
                     self.schedule_listbox.itemconfig(i,{'bg':self.schedule_colors[int(self.schedule.task_flags[i])]})
 
 
@@ -972,9 +1037,9 @@ class App():
     def update_info(self):
         """Repopulate the daily info after new data from threaded solar is availabe"""
         self.high_sun_sza_entry.config(text=(str("%#06.2f" % self.daily_info.high_sun_sza)))
-        self.high_sun_time_entry.config(text=str(self.daily_info.high_sun_time))
+        self.high_sun_time_entry.config(text=str(datetime.datetime.strftime(self.daily_info.high_sun_time,'%H:%M:%S')))
         self.low_sun_sza_entry.config(text=(str("%#06.2f" %  self.daily_info.low_sun_sza)))
-        self.low_sun_time_entry.config(text=str(self.daily_info.low_sun_time))
+        self.low_sun_time_entry.config(text=str(datetime.datetime.strftime(self.daily_info.low_sun_time,'%H:%M:%S')))
         self.sunrise_entry.config(text=str(self.daily_info.sunrise))
         self.sunset_entry.config(text=str(self.daily_info.sunset))
         self.day_length_entry.config(text=str(self.daily_info.day_length))
@@ -1133,7 +1198,7 @@ class App():
         self.proc=subprocess.Popen(['pythonw','exec_xpm.py',str(xpm_path),experiment,format_mode,str(schedule_path),a,b,gui,sim])
         self.proc.communicate()  
         time.sleep(5)           
-
+        self.proc.kill()
     def begin_opus_process(self,taskname,xpmpath,taskpath):
         """Submit the thread monitored process"""
         endoffile=chr(13)+chr(10)
@@ -1207,6 +1272,7 @@ class App():
                         t3=threading.Thread(target=self.monitor,args=(xpm_path,str(experiments[p]),str(self.legacy_format_mode.get()),self.schedule_pathout,str(p+1),str(len(experiments)),str(self.gui_test_mode),str(self.simulator_mode)))
                         t3.start()
                         """While the thread is going, check on it, once finished proceed"""
+                        self.initialising_flag=0
                         while t3.isAlive():
                             self.update_clock()
                             self.root.update()
@@ -1294,6 +1360,8 @@ class App():
 
             t3=threading.Thread(target=self.monitor,args=(xpm_path,taskname,str(self.legacy_format_mode.get()),self.schedule_pathout,'1','1',str(self.gui_test_mode),str(self.simulator_mode)))
             t3.start()
+            self.initialising_flag=0
+
             while t3.isAlive():
                 self.update_clock()
                 self.root.update()
@@ -1301,7 +1369,6 @@ class App():
 
             duration=(get_local_time(int(site['timezone']))-start_time).seconds
             self.write_output("Xpm Complete - "+taskname+" Duration "+str(duration)+ " Secs.")
-            self.proc.kill() 
             
             """Far less to do for a single xpm"""
             self.config_all_buttons(state="normal")
@@ -1331,8 +1398,8 @@ if __name__=='__main__':
     startup=config_out('startup',config)
     log_path=def_paths_files['python_log_path']
     """Setup python log file"""
-  #  sys.stdout= open(log_path+"\\gui_log.dat","a")
-  #  sys.stderr=sys.stdout
+#    sys.stdout= open(log_path+"\\gui_log.dat","a")
+#    sys.stderr=sys.stdout
 
     "Start App!"
    # f=Figure(figsize=(5,5),dpi=100)

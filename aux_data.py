@@ -84,8 +84,8 @@ def gather_auxiliary_data():
     todayspath=year+month+day
     try:
     	f=urllib.urlopen("http://10.10.0.100:8080/logs/"+todayspath+"/solar.txt").read()
-    	lastline=(f.split("\r\n")[-2]).split()
-    	if lastline[-1]!="cloudy":
+    	lastline=(f.split("\n")[-2]).split()
+    	if lastline[-1] not in ["cloudy","stopped","north"] :
 		flag=0
     	else:
 		flag=1
