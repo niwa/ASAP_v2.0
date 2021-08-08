@@ -1,0 +1,5 @@
+#Task Data Base
+#Type Value Name 
+C 01:00:00 01:10:00 gainset.tsk
+C 01:20:00 01:30:00 lamp_off.tsk
+Z 90 0 nir.tsk

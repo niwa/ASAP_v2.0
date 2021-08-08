@@ -1,0 +1,5 @@
+# hbr_cell.tsk
+# this starts glowbar, waits a few mins, runs cell the turns glowbar off
+on_mir.xpm
+h15_hbr_cell.xpm
+of_mir.xpm

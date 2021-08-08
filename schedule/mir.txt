@@ -1,59 +1,74 @@
-Z(T) Deg&a/p(time)
-C 05:40:00  ln2_fill.tsk  
+# mir schedule
+Z 90.0 A    lamps_off.tsk
 Z 87.5 A    sza_90_80.tsk            
+Z 87.0 A    sza_80_70.tsk            
+Z 86.5 A    sza_80_70.tsk            
+Z 86.0 A    sza_80_70.tsk            
 Z 85.0 A    sza_90_80.tsk            
+Z 84.0 A    sza_80_70.tsk            
 Z 83.0 A    sza_80_70.tsk            
+Z 82.0 A    sza_80_70.tsk            
+Z 81.0 A    sza_80_70.tsk            
 Z 80.0 A    sza_80_70.tsk            
+Z 79.0 A    sza_80_70.tsk
+Z 78.0 A    sza_80_70.tsk
+Z 77.0 A    sza_80_70.tsk
+Z 76.0 A    sza_80_70.tsk
 Z 75.0 A    sza_80_70.tsk
-Z 75.0 A    sza_80_70.tsk
+Z 74.0 A    sza_70_60.tsk            
 Z 73.0 A    sza_70_60.tsk            
-Z 71.2 A    sza_70_60.tsk            
-Z 70.5 A    sza_70_60.tsk            
+Z 72.0 A    sza_70_60.tsk            
+Z 71.0 A    sza_70_60.tsk            
+Z 70.0 A    sza_70_60.tsk            
+Z 69.0 A    sza_70_60.tsk            
 Z 68.0 A    sza_70_60.tsk            
 Z 67.0 A    sza_70_60.tsk            
+Z 66.0 A    sza_70_60.tsk            
 Z 65.0 A    sza_70_60.tsk            
+Z 64.0 A    sza_70_60.tsk
 Z 63.0 A    sza_70_60.tsk
 Z 62.0 A    sza_70_60.tsk
 Z 60.0 A    sza_70_60.tsk            
-Z 57.0 A    sza_50_60.tsk
-Z 55.0 A    sza_50_60.tsk
-Z 53.0 A    sza_50_60.tsk
+Z 57.0 A    sza_60_50.tsk
+Z 55.0 A    sza_60_50.tsk
+Z 53.0 A    sza_60_50.tsk
 Z 50.0 A    sza_50_40.tsk
 Z 48.0 A    sza_50_40.tsk
 Z 45.0 A    sza_50_40.tsk
-Z 40.0 A    sza_30_40.tsk
-Z 35.0 A    sza_30_40.tsk
-Z 30.0 A    sza_20_30.tsk
-Z 25.0 A    sza_20_30.tsk
-T 12:00:00  sza_50_40.tsk
-T 12:30:00  sza_50_40.tsk
-T 13:00:00  sza_50_40.tsk
-T 13:30:00  sza_50_40.tsk
-T 15:00:00  ooofti_run.tsk            
-T 15:15:00  ooofti_run.tsk            
-T 15:35:00  ooofti_run.tsk            
-Z 25.0 P    sza_20_30.tsk
-Z 30.0 P    sza_20_30.tsk
-Z 35.0 P    sza_30_40.tsk
-Z 40.0 P    sza_30_40.tsk
-Z 45.0 P    sza_50_40.tsk
-Z 48.0 P    sza_50_40.tsk
-Z 50.0 P    sza_50_60.tsk
-Z 52.0 P    sza_50_60.tsk
-Z 55.0 P    sza_50_60.tsk
-Z 58.0 P    sza_50_60.tsk
-Z 60.0 P    sza_60_70.tsk
-Z 62.0 P    sza_60_70.tsk
-Z 63.0 P    sza_60_70.tsk
-Z 65.0 P    sza_60_70.tsk              
-Z 67.0 P    sza_60_70.tsk              
-Z 68.0 P    sza_60_70.tsk              
-Z 69.0 P    sza_60_70.tsk              
-Z 70.0 P    sza_70_80.tsk               
-Z 72.0 P    sza_70_80.tsk               
-Z 75.0 P    sza_70_80.tsk               
-Z 77.0 P    sza_70_80.tsk               
-Z 80.0 P    sza_80_90.tsk               
-Z 83.0 P    sza_80_90.tsk               
-Z 85.0 P    sza_80_90.tsk
+Z 40.0 A    sza_40_30.tsk
+Z 35.0 A    sza_30_20.tsk
+Z 30.0 A    sza_30_20.tsk
+Z 25.0 A    sza_30_20.tsk
+Z 25.0 P    sza_30_20.tsk
+Z 30.0 P    sza_30_20.tsk
+Z 35.0 P    sza_40_30.tsk
+Z 40.0 P    sza_40_30.tsk
+Z 45.0 P    sza_40_30.tsk
+Z 48.0 P    sza_40_30.tsk
+Z 50.0 P    sza_50_40.tsk
+Z 52.0 P    sza_60_50.tsk
+Z 55.0 P    sza_60_50.tsk
+Z 58.0 P    sza_60_50.tsk
+Z 60.0 P    sza_60_60.tsk
+Z 61.0 P    sza_70_60.tsk
+Z 62.0 P    sza_70_60.tsk
+Z 63.0 P    sza_70_60.tsk
+Z 64.0 P    sza_70_60.tsk
+Z 65.0 P    sza_70_60.tsk
+Z 66.0 P    sza_70_60.tsk
+Z 67.0 P    sza_70_60.tsk              
+Z 68.0 P    sza_70_60.tsk              
+Z 69.0 P    sza_70_60.tsk              
+Z 70.0 P    sza_80_70.tsk               
+Z 71.0 P    sza_80_70.tsk               
+Z 72.0 P    sza_80_70.tsk               
+Z 73.0 P    sza_80_70.tsk               
+Z 74.0 P    sza_80_70.tsk               
+Z 75.0 P    sza_80_70.tsk               
+Z 76.0 P    sza_80_70.tsk               
+Z 77.0 P    sza_80_70.tsk               
+Z 80.0 P    sza_90_80.tsk               
+Z 83.0 P    sza_90_80.tsk               
+Z 85.0 P    sza_90_80.tsk
+T 22:00:00  n2o_cell.tsk            
 end

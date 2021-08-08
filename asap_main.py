@@ -1399,8 +1399,17 @@ class App():
 if __name__=='__main__':
     
     "Lets get down to business! First off, lets get all the default_info from the ini file"
+    
+    args=sys.argv
+    if len(args)==1:
+        config_file='asap.ini'
+    else:
+        config_file=args[1]
+    print config_file
+
+    
     config=ConfigParser.ConfigParser()
-    config.read('asap.ini')
+    config.read(config_file)
     
     
 

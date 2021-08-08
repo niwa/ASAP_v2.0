@@ -1,5 +1,6 @@
 Z(T) Deg&a/p(time)
-C 00:30:00  ln2_fill.tsk
+C 00:30:00  gainset.tsk
+T 01:00:00  lamp_off.tsk
 T 07:00:00  nir.tsk
 T 07:10:00  nir.tsk
 T 07:20:00  nir.tsk

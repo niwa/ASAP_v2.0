@@ -1,14 +1,2 @@
-nir.tsk   JR
-XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
-10       Number of XPMS to run
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-nir.xpm LW
-EXIT
+# nir.tsk
+nir.xpm
