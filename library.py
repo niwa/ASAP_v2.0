@@ -23,6 +23,7 @@ import subprocess
 import win32com.client
 import ConfigParser
 from threading import Thread
+import pandas as pd
 
 class ThreadWithReturnValue(Thread):
     def __init__(self, group=None, target=None, name=None,
@@ -247,7 +248,7 @@ class load_schedule(object):
             
         if dynamic_schedule_mode==1:
             try:
-                self.all_times, self.all_ids, self.task_flags,self.task_types=dynamic_schedule(schedule_file,daily_info)
+                self.all_times, self.all_ids, self.task_flags,self.task_types=dynamic_schedule_2(schedule_file,daily_info)
             except IOError:
                 pass
 
@@ -343,6 +344,8 @@ def expected_time_schedule(a,daily_info):
     task_type=[]
     task_sza=[]
     task_time=[]
+    task_time_c=[]
+
     task_sza_ap=[]
     task_id=[]
     for i in range(1,len(content1)-1):
@@ -357,9 +360,9 @@ def expected_time_schedule(a,daily_info):
             if info[0]=="T":
                 x=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
                 task_time.append(x)
-#            if info[0]=="C":
-#                x=datetime.datetime(time_local.year,time_local.month,time_local.day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
-#                task_time.append(x) 
+            if info[0]=="C":
+                x=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
+                task_time_c.append(x)
         else:
             continue  
 
@@ -385,7 +388,7 @@ def expected_time_schedule(a,daily_info):
     k=0
     j=0
     sza_out=[]
-    
+    l=0
     for i in range(len(task_type)):
 
         if task_type[i]=='Z':
@@ -398,13 +401,21 @@ def expected_time_schedule(a,daily_info):
 
             #times_out_utc.append((sza_time_local[k]+datetime.timedelta(hours=-utc_offset)))
             k=k+1
-        else: 
+        elif task_type[i]=='T': 
             sza_out.append(nan)
 
             times_out.append(task_time[j])
             
             #times_out_utc.append((sza_time_local[j]+datetime.timedelta(hours=-utc_offset)))
             j=j+1
+            
+        elif task_type[i]=='T': 
+            sza_out.append(nan)
+            task_flags[i]=3
+            times_out.append(task_time_c[l])
+            
+            #times_out_utc.append((sza_time_local[j]+datetime.timedelta(hours=-utc_offset)))
+            l=l+1
     
     ##Remove tasks that are not in order and create log file with warning
 
@@ -431,7 +442,7 @@ def expected_time_schedule(a,daily_info):
 def find_next_time(array,flags,value):
     diff=(array-value)
     for i in range(len(diff)):
-        if diff[i]>datetime.timedelta(0,0,0) and flags[i]==0:
+        if diff[i]>datetime.timedelta(0,0,0) and (flags[i]==0 or flags[i]==3):
             break
     if diff[i]<datetime.timedelta(0,0,0):
         i=-1
@@ -477,12 +488,65 @@ def read_task(taskname):
     return array(xpms)
     
     
-   
+
+def dynamic_schedule_2(a,daily_info):
+    database=loadtxt(a,dtype=str,unpack=True,skiprows=2)
+    df=pd.DataFrame()
+    df['time']=daily_info.times_local
+    df['sza']=daily_info.sza_ref
+    df['task']=ones(len(daily_info.times_local))*-1
+    df['tasknames']=array(['idle']*(len(daily_info.times_local)))
+    df['task_type']=array(['I']*(len(daily_info.times_local)))
+    for i in range(len(database[0])):
+        if database[0][i]=='C' or database[0][i]=='T':
+            time_start=daily_info.times_local[0].replace(hour=int(database[1][i][0:2]),minute=int(database[1][i][3:5]),second=int(database[1][i][6:9]))
+            time_end=daily_info.times_local[0].replace(hour=int(database[2][i][0:2]),minute=int(database[2][i][3:5]),second=int(database[2][i][6:9]))
+            df['task'][(df['time'] >= time_start) & (df['time'] < time_end)]=i
+            df['tasknames'][(df['time'] >= time_start) & (df['time'] < time_end)]=database[3][i]
+            df['task_type'][(df['time'] >= time_start) & (df['time'] < time_end)]=database[0][i]
+
+        if database[0][i]=='Z':
+            sza_min=float(database[1][i])
+            sza_max=float(database[2][i])
+            sza_range=sort([sza_min,sza_max])
+            df['task'][(df['task']==-1) & (df['sza'] <= sza_range[1]) & (df['sza'] >= sza_range[0])]=i
+            df['tasknames'][(df['task']==i) & (df['sza'] <= sza_range[1]) & (df['sza'] >= sza_range[0])]=database[3][i]
+            df['task_type'][(df['task']==i) & (df['sza'] <= sza_range[1]) & (df['sza'] >= sza_range[0])]=database[0][i]
+    
+    #df_out=df[df['task']>-1]
+    grouper=df.groupby([(df.task != df.task.shift()).cumsum()])
+    groups=[]
+    
+    for group in grouper:
+        groups.append(group)
+    """split in to groups of consecutive values"""
+
+    windows_start=[]
+    tasknames_out=[]
+    task_flags=[]
+    task_types_out=[]
+    for group in groups:
+        df_g=group[1].reset_index()
+        windows_start.append(df_g['time'][0])
+        tasknames_out.append(df_g['tasknames'][0])
+        task_types_out.append(df_g['task_type'][0])
+        task_flags.append(0)
+    windows_start.append(df_g['time'][len(df_g['time'])-1])
+    task_flags.append(0)
+    tasknames_out.append('Completed')
+    task_types_out.append('I')
+        
+    
+    return windows_start, tasknames_out, task_flags,task_types_out
+        
+            
+
+    
 def dynamic_schedule(a,daily_info):
 
     """read schedule 'a' and compute an expected time schedule based on the szas and times required
     """
-
+    print a
     
     database=loadtxt(a,dtype=str,unpack=True,skiprows=2)
 
@@ -582,7 +646,7 @@ def dynamic_schedule(a,daily_info):
 
             
             """Here is the same but simpler because it is for the time specfied windows"""
-            if database[0][i]=='T' or database[0]=='C':
+            if database[0][i]=='T' or database[0][i]=='C':
                 start=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(ranges[0][0:2]),int(ranges[0][3:5]),int(ranges[0][6:9]))
                 stop=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(ranges[1][0:2]),int(ranges[1][3:5]),int(ranges[1][6:9]))
                 windows_start_m.append(start)
@@ -600,35 +664,49 @@ def dynamic_schedule(a,daily_info):
         
         window_identity=list(merged_windows_sza[0])
         windows_start=list(merged_windows_sza[1])
+
         windows_stop=list(merged_windows_sza[2])
         """Now we have to merge the two lists of windows together. This is non trivial as the time dependent list
         will overlap multiple windows"""
         
         windows_start.append(max(windows_stop))
         window_identity.append("Complete")
+        
+
+             
+                
+        
+        
         for i in range(len(windows_start_m)):
             if windows_stop_m[i]>max(windows_stop):
                 windows_start[-1]=windows_stop_m[i]
-                
+  
+            
            
             next_stop=find_next_time_nf(array(windows_start),windows_stop_m[i])
             next_start=find_next_time_nf(array(windows_start),windows_start_m[i])
     
-    
-      
-            if next_start==next_stop:
+            if next_start==next_stop==0:
                 
                 windows_start.insert(next_start,windows_start_m[i])
                 window_identity.insert(next_start,window_identity_m[i])
+                #windows_start[1]=windows_stop_m[i]
+                
+       
+            elif next_start==next_stop:
+                
+                windows_start.insert(next_start,windows_start_m[i])
+                window_identity.insert(next_start,window_identity_m[i])
+                
                 windows_start.insert(next_start+1,windows_stop_m[i])
                 window_identity.insert(next_start+1,window_identity[next_start-1])
-            if next_stop-next_start==1:
+            elif next_stop-next_start==1:
                 
                 windows_start.insert(next_start,windows_start_m[i])
                 window_identity.insert(next_start,window_identity_m[i])
                 windows_start[next_start+1]=windows_stop_m[i]
                 
-            if next_stop-next_start>1:
+            elif next_stop-next_start>1:
                 to_delete=(next_stop-next_start)-1
                 j=0
                 while j<to_delete:
@@ -646,6 +724,7 @@ def dynamic_schedule(a,daily_info):
             if windows_start[next_start-1]==windows_start[next_start]:
                 del windows_start[next_start-1]
                 del window_identity[next_start-1]
+        print window_identity
         tasknames_out=[]
         for i in range(len(window_identity)-1):    
             

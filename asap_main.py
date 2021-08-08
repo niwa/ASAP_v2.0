@@ -241,7 +241,8 @@ class App():
         """Thread out the schedule process"""    
         self.daily_info=None
         self.reset_time=get_local_time(int(site['timezone']))+datetime.timedelta(hours=24)
-        self.reset_time=self.reset_time.replace(hour=1,minute=0,second=0)
+        reset_time_in=datetime.datetime.strptime(site['reset_time'],'%H:%M')
+        self.reset_time=self.reset_time.replace(hour=reset_time_in.hour,minute=reset_time_in.minute,second=0)
         
         
         
@@ -478,7 +479,10 @@ class App():
                     if self.task_run==0 and self.aux_flag==0 and self.initialising_flag==0:
                         self.task_status=task_id      
                         self.process_initialisation(taskname,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="basic_schedule")
-                    
+                    elif self.task_run==0 and self.aux_flag==1 and self.initialising_flag==0 and self.schedule.task_flafs[self.task_index]==3:
+                        self.task_status=task_id      
+                        self.process_initialisation(taskname,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="basic_schedule")
+                  
                     elif self.initialising_flag==0:
                         if self.task_run!=0 or self.aux_flag==1:
                             text="Skipped "+taskname+' '+str(task_id)+' '
@@ -531,17 +535,21 @@ class App():
             countdown_out=format_countdown(self.task_time2-get_local_time(int(site['timezone'])))
 
             if self.schedule_status==1:
-                if self.task_index!=-1:
+                if self.schedule.task_types[self.task_index-1]!='I':
                     self.time_left=self.task_time2-get_local_time(int(site['timezone']))
 
 
-                    if self.aux_flag==0 or self.schedule.task_types[self.task_index-1]=="C"
+                    if self.aux_flag==0 or self.schedule.task_types[self.task_index-1]=="C":
+                        #print 'here'
+
                         if self.task_run==0 and self.initialising_flag==0:
                             if self.task_index==0:
                                 self.next_task_name="Waiting"
                                 self.scheduled_task_entry.configure(text=self.next_task_name)
 
                             else:
+                               
+
                                 if self.schedule.task_types[self.task_index-1]=="C":
                                     if self.task_counts[self.task_index-1]==0:
                                         self.next_task_name = str(self.schedule.all_ids[self.task_index - 1])
@@ -556,6 +564,7 @@ class App():
                                             self.write_output("counts = " + str(self.task_counts[self.task_index - 1]))
 
                                 elif self.time_left>datetime.timedelta(minutes=int(self.dynamic_margin_time)) or (self.task_counts[self.task_index-1]>0 and self.time_left>datetime.timedelta(seconds=int(self.durations[self.task_index-1])) and self.schedule.task_types[self.task_index]!="T"):
+                                    
                                     self.next_task_name=str(self.schedule.all_ids[self.task_index-1])
                                     self.task_status=self.task_index-1
                                     self.scheduled_task_entry.configure(text=self.next_task_name)
@@ -565,6 +574,7 @@ class App():
                                         self.process_initialisation(self.next_task_name,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="dynamic_schedule")
                                         self.write_output("counts = "+str(self.task_counts[self.task_index-1]))
                                 elif self.time_left<datetime.timedelta(minutes=int(self.dynamic_margin_time)) and self.schedule.task_types[self.task_index]!="T":
+                                    print 'here'
                                     current_task=self.task_index
                                     self.next_task_name=str(self.schedule.all_ids[self.task_index])
                                     self.scheduled_task_entry.configure(text=self.next_task_name)
@@ -588,8 +598,11 @@ class App():
                         self.schedule_listbox.itemconfig(self.task_index-1,{'bg':self.schedule_colors[3]})           
 
                 else:
-                    countdown_out='00:00:00'
-                    self.next_task_name='Schedule Complete'
+                    
+                    self.next_task_name = str(self.schedule.all_ids[self.task_index - 1])
+
+#                    countdown_out='00:00:00'
+#                    self.next_task_name='Schedule Complete'
                     self.scheduled_task_entry.configure(text=self.next_task_name)
         
 #        if self.schedule_status==0:
@@ -1125,65 +1138,72 @@ class App():
         white_item=tk.Label(self.help_window,text="")
         white_item.config({"bg":"orange"})
         white_item.grid(row=9,column=0,sticky=E+W,ipadx=50,padx=50)
-        orange_item=tk.Label(self.help_window,text="Skipped")
+        orange_item=tk.Label(self.help_window,text="Skipped - Active task or aux")
         #orange_item.config({"bg":"orange"})
         orange_item.grid(row=9,column=1,sticky=W)
+        
+        white_item=tk.Label(self.help_window,text="")
+        white_item.config({"bg":"yellow"})
+        white_item.grid(row=10,column=0,sticky=E+W,ipadx=50,padx=50)
+        orange_item=tk.Label(self.help_window,text="Missed - Schedule Stopped")
+        #orange_item.config({"bg":"orange"})
+        orange_item.grid(row=10,column=1,sticky=W)
 
         white_item=tk.Label(self.help_window,text="")
         white_item.config({"bg":"green"})
-        white_item.grid(row=10,column=0,sticky=E+W,ipadx=50,padx=50)
+        white_item.grid(row=11,column=0,sticky=E+W,ipadx=50,padx=50)
         green_item=tk.Label(self.help_window,text="Running")
         #green_item.config({"bg":"green"})
-        green_item.grid(row=10,column=1,sticky=W)
+        green_item.grid(row=11,column=1,sticky=W)
         
         white_item=tk.Label(self.help_window,text="")
         white_item.config({"bg":"blue"})
-        white_item.grid(row=11,column=0,sticky=E+W,ipadx=50,padx=50)
+        white_item.grid(row=12,column=0,sticky=E+W,ipadx=50,padx=50)
         blue_item=tk.Label(self.help_window,text="Completed")
         #blue_item.config({"bg":"blue"})
-        blue_item.grid(row=11,column=1,sticky=W)
+        blue_item.grid(row=12,column=1,sticky=W)
         
         spacer=tk.Label(self.help_window,text="")
-        spacer.grid(row=12,columnspan=2)
+        spacer.grid(row=13,columnspan=2)
         
         mode_label=tk.Label(self.help_window,text="Operating Modes:")
-        mode_label.grid(row=13,column=0,columnspan=2,sticky=W)
+        mode_label.grid(row=14,column=0,columnspan=2,sticky=W)
         
         spacer=tk.Label(self.help_window,text="")
-        spacer.grid(row=14,columnspan=1)
+        spacer.grid(row=15,columnspan=1)
         
         cont_label=tk.Label(self.help_window,text="Run Daily: Automatically starts the next days schedule at 1am local")
-        cont_label.grid(row=15,column=0,columnspan=2,sticky=W)
+        cont_label.grid(row=16,column=0,columnspan=2,sticky=W)
         
         dynam_label=tk.Label(self.help_window,text="Dynamic Mode: Generates a schedule tailored to the current day")
-        dynam_label.grid(row=16,column=0,columnspan=2,sticky=W)
+        dynam_label.grid(row=17,column=0,columnspan=2,sticky=W)
         
         leg_label=tk.Label(self.help_window,text="Legacy Format: Uses the original output file format, as opposed to something sensible")
-        leg_label.grid(row=17,column=0,columnspan=2,sticky=W)
+        leg_label.grid(row=18,column=0,columnspan=2,sticky=W)
         
         flag_label=tk.Label(self.help_window,text="Use Aux Flag: Uses the flag generated by the auxilliary data to decide whether or not to run a task")
-        flag_label.grid(row=18,column=0,columnspan=2,sticky=W)
+        flag_label.grid(row=19,column=0,columnspan=2,sticky=W)
 
         s1_label=tk.Label(self.help_window,text="Start / Stop Schedule: Start Schedule, Stop the schedule from running the NEXT task")
-        s1_label.grid(row=19,column=0,columnspan=2,sticky=W)
+        s1_label.grid(row=20,column=0,columnspan=2,sticky=W)
     
         ab_label=tk.Label(self.help_window,text="Abort Task: Stop the CURRENT task from running any furhter xpms")
-        ab_label.grid(row=20,column=0,columnspan=2,sticky=W)
+        ab_label.grid(row=21,column=0,columnspan=2,sticky=W)
     
         br_label=tk.Label(self.help_window,text="Browse xpms and tasks: browse for desired manual job, default path is set in the ini")
-        br_label.grid(row=21,column=0,columnspan=2,sticky=W)
+        br_label.grid(row=22,column=0,columnspan=2,sticky=W)
     
         ex_label=tk.Label(self.help_window,text="Execute Task or Xpm: Run the task or xpm selected, will warn you if you havent chosen one")
-        ex_label.grid(row=22,column=0,columnspan=2,sticky=W)
+        ex_label.grid(row=23,column=0,columnspan=2,sticky=W)
     
         enter_label=tk.Label(self.help_window,text="Enter Comment: Enter user comment into the log file")
-        enter_label.grid(row=23,column=0,columnspan=2,sticky=W)
+        enter_label.grid(row=24,column=0,columnspan=2,sticky=W)
     
         test_label=tk.Label(self.help_window,text="Test Opus: Test if the link to opus is still working, will return opus version and instrument if no task is running, and currently polling if a task is")
-        test_label.grid(row=24,column=0,columnspan=2,sticky=W)
+        test_label.grid(row=25,column=0,columnspan=2,sticky=W)
         
         aux_label=tk.Label(self.help_window,text="View Auxiliary Data: View the auxilliary data and flag generated by the gather_auxiliary_data function in aux_data.py")
-        aux_label.grid(row=25,column=0,columnspan=2,sticky=W)
+        aux_label.grid(row=26,column=0,columnspan=2,sticky=W)
         
     def write_comment(self):
         """Grab the text from the user comment and write it to the log and screen, destroys
