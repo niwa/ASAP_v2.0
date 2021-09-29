@@ -1,5 +1,5 @@
 # mir schedule
-Z 90.0 A    lamps_off.tsk
+C 95.0 A    lamps_off.tsk
 Z 87.5 A    sza_90_80.tsk            
 Z 87.0 A    sza_80_70.tsk            
 Z 86.5 A    sza_80_70.tsk            
@@ -49,7 +49,7 @@ Z 50.0 P    sza_50_40.tsk
 Z 52.0 P    sza_60_50.tsk
 Z 55.0 P    sza_60_50.tsk
 Z 58.0 P    sza_60_50.tsk
-Z 60.0 P    sza_60_60.tsk
+Z 60.0 P    sza_70_60.tsk
 Z 61.0 P    sza_70_60.tsk
 Z 62.0 P    sza_70_60.tsk
 Z 63.0 P    sza_70_60.tsk
@@ -70,5 +70,4 @@ Z 77.0 P    sza_80_70.tsk
 Z 80.0 P    sza_90_80.tsk               
 Z 83.0 P    sza_90_80.tsk               
 Z 85.0 P    sza_90_80.tsk
-T 22:00:00  n2o_cell.tsk            
 end

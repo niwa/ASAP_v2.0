@@ -1,0 +1,9 @@
+nir_08mm.tsk   JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+5       Number of XPMS to run
+nir_08mm.xpm LW
+nir_08mm.xpm LW
+nir_08mm.xpm LW
+nir_08mm.xpm LW
+nir_08mm.xpm LW
+EXIT

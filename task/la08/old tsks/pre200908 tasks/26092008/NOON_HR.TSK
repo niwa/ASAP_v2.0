@@ -1,0 +1,11 @@
+NOON_HR RUN IN NZ  * For 120HR* 1-08-06 JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+7       Number of XPMS to run
+L2SHB123.xpm L2
+L3SHB103.xpm L3
+L3SHB023.xpm L3
+LCSMB15A.xpm LC
+L4SHB113.xpm L4
+L5SHB043.xpm L5
+L9SHB063.xpm L9
+EXIT

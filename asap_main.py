@@ -172,7 +172,7 @@ class App():
         
         """Define Initial Variables"""
 
-        self.schedule_colors=['white','red','red','orange','green','blue']
+        self.schedule_colors=['white','red','red','orange','green','blue','yellow']
 
         self.process_ids=[]   
         self.proc=None
@@ -479,7 +479,7 @@ class App():
                     if self.task_run==0 and self.aux_flag==0 and self.initialising_flag==0:
                         self.task_status=task_id      
                         self.process_initialisation(taskname,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="basic_schedule")
-                    elif self.task_run==0 and self.aux_flag==1 and self.initialising_flag==0 and self.schedule.task_flafs[self.task_index]==3:
+                    elif self.task_run==0 and self.aux_flag==1 and self.initialising_flag==0 and self.schedule.task_flags[self.task_index]==6:
                         self.task_status=task_id      
                         self.process_initialisation(taskname,xpmpath=def_paths_files['xpmpath'],taskpath=def_paths_files["taskspath"],task_type="basic_schedule")
                   
@@ -856,6 +856,8 @@ class App():
                     self.comments.append("Cancelled due to invalid sza")    
                 if int(self.schedule.task_flags[i])==0:
                     self.comments.append("Scheduled")
+                if int(self.schedule.task_flags[i])==6:
+                    self.comments.append("Scheduled - Ignoring Aux")
             print len(self.comments)
             f=open(self.schedule_pathout,"a")
            # f.write(self.timestamp+" BrukeryPy Restarted\n")

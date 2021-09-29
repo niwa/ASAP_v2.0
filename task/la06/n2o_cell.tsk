@@ -1,0 +1,5 @@
+# n2o_cell.tsk
+# this starts mir lamp, waits a few mins, runs cell the turns lamp off
+on_mir.xpm
+n15_n2o_cell.xpm
+of_mir.xpm

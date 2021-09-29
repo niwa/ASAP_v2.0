@@ -1,0 +1,14 @@
+MCT task  * For 120HR* 28-6-02 JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+10       Number of XPMS to run
+L9SHB163.xpm L9
+LmSHB163.xpm Lm
+LnSHB163.xpm Ln
+L9SHB163.xpm L9
+LnSHB263.xpm Lm
+LmSHB263.xpm Ln
+L9SHB263.xpm L9
+LnSHB263.xpm Ln
+LmSHB263.xpm Lm
+L9SHB263.xpm L9
+EXIT

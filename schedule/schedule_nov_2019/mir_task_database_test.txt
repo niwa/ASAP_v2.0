@@ -1,0 +1,10 @@
+#Task Data Base
+#Type Value Name 
+C 00:30:00 00:35:00 lamps_off.tsk
+Z 90 80 sza_90_80.tsk
+Z 80 70 sza_80_70.tsk
+Z 70 60 sza_70_60.tsk
+Z 60 50 sza_60_50.tsk
+Z 50 40 sza_50_40.tsk
+Z 40 30 sza_40_30.tsk
+Z 30 20 sza_30_20.tsk

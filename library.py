@@ -345,13 +345,14 @@ def expected_time_schedule(a,daily_info):
     task_sza=[]
     task_time=[]
     task_time_c=[]
-
+    task_sza_c=[]
+    task_sza_ap_c=[]
     task_sza_ap=[]
     task_id=[]
     for i in range(1,len(content1)-1):
         
         info=content1[i].split()
-        if info[0]=="Z" or info[0]=="T":
+        if info[0]=="Z" or info[0]=="T" or info[0]=="C":
             task_type.append(info[0])
             task_id.append(info[-1])
             if info[0]=='Z':
@@ -361,13 +362,27 @@ def expected_time_schedule(a,daily_info):
                 x=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
                 task_time.append(x)
             if info[0]=="C":
-                x=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
-                task_time_c.append(x)
+                if len(info)==3:
+                    x=datetime.datetime(daily_info.times_local[0].year,daily_info.times_local[0].month,daily_info.times_local[0].day,int(info[1][0:2]),int(info[1][3:5]),int(info[1][6:9]))
+                    task_time_c.append(x)
+                else:
+                    task_type[-1]='CZ'
+                    task_sza_c.append(info[1])
+                    task_sza_ap_c.append(info[2])
         else:
             continue  
 
 
-
+    sza_time_local_c=[]    
+    for i in range(len(task_sza_c)):
+        if task_sza_ap[i]=='A':
+            #sza_time.append(times[find_nearest(array(sza_ref[0:high_sun_idx]),task_sza[i])])
+            
+            index2=find_nearest(array(daily_info.sza_ref[0:daily_info.high_sun_idx]),float(task_sza_c[i]))
+            sza_time_local_c.append(daily_info.times_local[index2])
+        if task_sza_ap[i]=='P':
+            sza_time_local_c.append(daily_info.times_local[find_nearest(array(daily_info.sza_ref[daily_info.high_sun_idx:]),float(task_sza_c[i]))+daily_info.high_sun_idx])
+    
         
     sza_time_local=[]    
     for i in range(len(task_sza)):
@@ -389,6 +404,7 @@ def expected_time_schedule(a,daily_info):
     j=0
     sza_out=[]
     l=0
+    m=0
     for i in range(len(task_type)):
 
         if task_type[i]=='Z':
@@ -409,13 +425,20 @@ def expected_time_schedule(a,daily_info):
             #times_out_utc.append((sza_time_local[j]+datetime.timedelta(hours=-utc_offset)))
             j=j+1
             
-        elif task_type[i]=='T': 
+        elif task_type[i]=='C': 
             sza_out.append(nan)
-            task_flags[i]=3
+            task_flags[i]=6
             times_out.append(task_time_c[l])
             
             #times_out_utc.append((sza_time_local[j]+datetime.timedelta(hours=-utc_offset)))
             l=l+1
+        
+        elif task_type[i]=='CZ': 
+            task_flags[i]=6
+            times_out.append(sza_time_local_c[m])
+            sza_out.append(task_sza_c[m])            
+            #times_out_utc.append((sza_time_local[j]+datetime.timedelta(hours=-utc_offset)))
+            m=m+1
     
     ##Remove tasks that are not in order and create log file with warning
 
@@ -426,7 +449,7 @@ def expected_time_schedule(a,daily_info):
     
     
     for i in range(1,len(all_times)):
-        if task_flags[i]!=2:
+        if task_flags[i]==1:
             if (all_times[i]-good_time)<datetime.timedelta(seconds=0):
                 task_flags[i]=1
             else:

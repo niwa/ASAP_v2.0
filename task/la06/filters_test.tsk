@@ -1,0 +1,11 @@
+# filters.tsk
+# this runs all filters plus the 2 LN2 dets with open filter
+L2_test.xpm
+L3_test.xpm
+L4_test.xpm
+L5_test.xpm
+LC_test.xpm
+InSb_open_test.xpm
+L9_test.xpm
+MCT_open_test.xpm
+

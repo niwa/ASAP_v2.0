@@ -1,0 +1,9 @@
+sza_30_20.tsk
+Task for NIWA006 125HR. List the XPSs you wish to run. Optionally enter the approx check signal levels.
+9__BA17.XPM B9 24k
+c__BR11.XPM BC 18k
+5__BA13.XPM B5
+4__BR08.XPM B4 17k
+3__BR05.XPM B3 17k
+2__BR10.XPM B2 17k
+EXIT

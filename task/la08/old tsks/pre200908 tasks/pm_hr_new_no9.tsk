@@ -1,0 +1,9 @@
+pm_hr_new RUN IN NZ  * For 120HR* 19-8-2009 JR
+XPMFileName(must be 8 chars) FileName Prefix(2 Chars prefered)
+5       Number of XPMS to run
+l5shb243.xpm l5
+l2shb233.xpm l2
+l3shb223.xpm l3
+l4shb143.xpm l4
+l9shb263.xpm l9
+EXIT
